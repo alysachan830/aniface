@@ -3,6 +3,7 @@
  */
 
 import type { FaceLandmarkerResult } from '@mediapipe/tasks-vision'
+import type { MediaPipeBlendshapeName } from './utils/blendshapeRetargeting'
 
 /**
  * Configuration options for FacialAvatar
@@ -47,11 +48,9 @@ export interface FacialAvatarConfig {
 
 /**
  * Blendshape multiplier configuration
- * Keys are blendshape names, values are multipliers
+ * Keys are MediaPipe blendshape names, values are multipliers
  */
-export interface BlendshapeMultipliers {
-  [blendshapeName: string]: number
-}
+export type BlendshapeMultipliers = Partial<Record<MediaPipeBlendshapeName, number>>
 
 /**
  * Event handlers for FacialAvatar
