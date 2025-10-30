@@ -13,9 +13,6 @@ import {
  * Configuration options for FacialLandmarkManager
  */
 export interface FacialLandmarkManagerConfig {
-  /** Number of faces to detect (default: 1) */
-  numFaces?: number
-  
   /** Whether to output face blendshapes (default: true) */
   outputFaceBlendshapes?: boolean
   
@@ -54,7 +51,6 @@ export class FacialLandmarkManager {
 
   constructor(config: FacialLandmarkManagerConfig = {}) {
     this.config = {
-      numFaces: 1,
       outputFaceBlendshapes: true,
       outputFacialTransformationMatrixes: true,
       delegate: 'GPU',
@@ -86,7 +82,7 @@ export class FacialLandmarkManager {
           outputFaceBlendshapes: this.config.outputFaceBlendshapes!,
           outputFacialTransformationMatrixes: this.config.outputFacialTransformationMatrixes!,
           runningMode: 'VIDEO',
-          numFaces: this.config.numFaces!,
+          numFaces: 1,
         }
       )
       

@@ -87,7 +87,6 @@ export class FacialAvatar {
       
       // Initialize landmark manager
       this.landmarkManager = new FacialLandmarkManager({
-        numFaces: this.config.numFaces ?? 1,
         delegate: this.config.delegate ?? 'GPU',
         outputFaceBlendshapes: true,
         outputFacialTransformationMatrixes: true

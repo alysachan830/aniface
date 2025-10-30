@@ -41,9 +41,6 @@ export interface FacialAvatarConfig {
   /** Camera field of view in degrees (default: 60) */
   fov?: number
   
-  /** Number of faces to detect (default: 1) */
-  numFaces?: number
-  
   /** Delegate for MediaPipe processing: 'CPU' or 'GPU' (default: 'GPU') */
   delegate?: 'CPU' | 'GPU'
 }
