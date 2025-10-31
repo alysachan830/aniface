@@ -99,7 +99,7 @@ export class FacialAvatar {
       this.avatarRenderer = new AvatarRenderer({
         canvas: this.config.canvasElement,
         modelPath: this.config.modelPath,
-        enableControls: this.config.enableControls ?? true,
+        enableControls: this.config.enableControls ?? false,
         enableZoom: this.config.enableZoom ?? false,
         fov: this.config.fov ?? 60
       })

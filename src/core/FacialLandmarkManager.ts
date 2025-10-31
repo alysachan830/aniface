@@ -71,7 +71,7 @@ export class FacialLandmarkManager {
       const filesetResolver = await FilesetResolver.forVisionTasks(
         this.config.wasmPath!
       )
-      
+      // createFromOptions customizes the Face Landmarker with configuration options
       this.faceLandmarker = await FaceLandmarker.createFromOptions(
         filesetResolver,
         {
