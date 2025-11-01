@@ -255,7 +255,7 @@
   </div>
 
   <script type="module">
-    import { FacialAvatar } from '../../src/index.ts'
+    import { FacialAvatar } from './src/index.ts'
 
     let avatar = null
     let webcamStream = null
@@ -320,7 +320,7 @@
         avatar = new FacialAvatar({
           videoElement: webcam,
           canvasElement: canvas,
-          modelPath: '../raccoon_head_small.glb',
+          modelPath: './examples/raccoon_head_small.glb',
           // Allow user to control the avatar three js scene
           enableControls: false,
           enableZoom: false,
@@ -419,5 +419,4 @@
   </script>
 </body>
 </html>
-
 
