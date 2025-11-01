@@ -5,13 +5,7 @@
  * to work better with different 3D models.
  */
 
-/**
- * Blendshape category from MediaPipe
- */
-export interface BlendshapeCategory {
-  categoryName: string
-  score: number
-}
+import type { BlendshapeCategory } from '../types'
 
 /**
  * Map of blendshape names to multiplier values
