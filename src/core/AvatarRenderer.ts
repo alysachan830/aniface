@@ -25,6 +25,9 @@ export interface AvatarRendererConfig {
   
   /** Camera field of view in degrees (default: 60) */
   fov?: number
+  
+  /** Custom blendshape multipliers to adjust expression intensity */
+  blendshapeMultipliers?: Record<string, number>
 }
 
 /**
@@ -65,7 +68,8 @@ export class AvatarRenderer {
       modelPath: config.modelPath,
       enableControls: config.enableControls ?? true,
       enableZoom: config.enableZoom ?? false,
-      fov: config.fov ?? 60
+      fov: config.fov ?? 60,
+      blendshapeMultipliers: config.blendshapeMultipliers ?? {}
     }
   }
 
@@ -259,29 +263,26 @@ export class AvatarRenderer {
     const coefsMap = new Map<string, number>()
     
     // Default multipliers for certain blendshapes
-    const multipliers: Record<string, number> = {
+    const defaultMultipliers: Record<string, number> = {
       browOuterUpLeft: 1.2,
       browOuterUpRight: 1.2,
       eyeBlinkLeft: 1.2,
       eyeBlinkRight: 1.2
     }
     
+    // Merge default multipliers with custom ones (custom takes precedence)
+    const multipliers = {
+      ...defaultMultipliers,
+      ...this.config.blendshapeMultipliers
+    }
+    
     for (const blendshape of categories) {
       const multiplier = multipliers[blendshape.categoryName] ?? 1.0
-      const adjustedScore = blendshape.score * multiplier
+      const adjustedScore = Math.min(blendshape.score * multiplier, 1.0) // Clamp to 1.0
       coefsMap.set(blendshape.categoryName, adjustedScore)
     }
     
     return coefsMap
-  }
-
-  /**
-   * Set custom blendshape multipliers
-   */
-  setBlendshapeMultipliers(multipliers: Record<string, number>): void {
-    // This will be used in retargetBlendshapes
-    // For now, we'll implement this in a future iteration
-    console.log('Custom blendshape multipliers:', multipliers)
   }
 
   /**

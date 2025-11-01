@@ -5,7 +5,6 @@
 import type { FacialAvatarConfig } from './types'
 import { FacialLandmarkManager } from './core/FacialLandmarkManager'
 import { AvatarRenderer } from './core/AvatarRenderer'
-import { retargetBlendshapes } from './utils/blendshapeRetargeting'
 
 /**
  * FacialAvatar - Animate 3D avatars with real-time facial tracking
@@ -101,7 +100,8 @@ export class FacialAvatar {
         modelPath: this.config.modelPath,
         enableControls: this.config.enableControls ?? false,
         enableZoom: this.config.enableZoom ?? false,
-        fov: this.config.fov ?? 60
+        fov: this.config.fov ?? 60,
+        blendshapeMultipliers: this.config.blendshapeMultipliers
       })
       
       await this.avatarRenderer.initialize()
@@ -194,24 +194,6 @@ export class FacialAvatar {
         // Face detected - reset counter
         this.noFaceDetectedCount = 0
         
-        // Apply custom blendshape multipliers if provided
-        if (this.config.blendshapeMultipliers && results.faceBlendshapes && results.faceBlendshapes.length > 0) {
-          const faceBlendshape = results.faceBlendshapes[0]
-          if (faceBlendshape && faceBlendshape.categories) {
-            const retargeted = retargetBlendshapes(faceBlendshape.categories, this.config.blendshapeMultipliers)
-            
-            // Replace the blendshapes with retargeted ones
-            const retargetedCategories = Array.from(retargeted.entries()).map(([name, score]) => ({
-              categoryName: name,
-              score,
-              index: 0,
-              displayName: name
-            }))
-            
-            faceBlendshape.categories = retargetedCategories
-          }
-        }
-        
         // Update avatar with landmarks
         this.avatarRenderer.processLandmarks(results)
         
@@ -247,16 +229,6 @@ export class FacialAvatar {
   updateSize(width: number, height: number): void {
     if (this.avatarRenderer) {
       this.avatarRenderer.updateSize(width, height)
-    }
-  }
-
-  /**
-   * Set custom blendshape multipliers at runtime
-   */
-  setBlendshapeMultipliers(multipliers: Record<string, number>): void {
-    this.config.blendshapeMultipliers = {
-      ...this.config.blendshapeMultipliers,
-      ...multipliers
     }
   }
 
