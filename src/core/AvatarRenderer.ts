@@ -6,6 +6,7 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import type { FaceLandmarkerResult } from '@mediapipe/tasks-vision'
 import { Avatar } from './Avatar'
+import { retargetBlendshapes } from '../utils/blendshapeRetargeting'
 
 /**
  * Configuration options for AvatarRenderer
@@ -243,46 +244,13 @@ export class AvatarRenderer {
       if (results.faceBlendshapes && results.faceBlendshapes.length > 0) {
         const faceBlendshape = results.faceBlendshapes[0]
         if (faceBlendshape && faceBlendshape.categories) {
-          const coefsMap = this.retargetBlendshapes(faceBlendshape.categories)
+          const coefsMap = retargetBlendshapes(faceBlendshape.categories, this.config.blendshapeMultipliers)
           this.avatar.updateBlendshapes(coefsMap)
         }
       }
     } catch (error) {
       console.error('Error processing landmarks:', error)
     }
-  }
-
-  /**
-   * Retarget blendshapes - apply multipliers to certain blendshapes
-   * @param categories - Blendshape categories from MediaPipe
-   * @returns Map of blendshape names to values
-   */
-  private retargetBlendshapes(
-    categories: Array<{ categoryName: string; score: number }>
-  ): Map<string, number> {
-    const coefsMap = new Map<string, number>()
-    
-    // Default multipliers for certain blendshapes
-    const defaultMultipliers: Record<string, number> = {
-      browOuterUpLeft: 1.2,
-      browOuterUpRight: 1.2,
-      eyeBlinkLeft: 1.2,
-      eyeBlinkRight: 1.2
-    }
-    
-    // Merge default multipliers with custom ones (custom takes precedence)
-    const multipliers = {
-      ...defaultMultipliers,
-      ...this.config.blendshapeMultipliers
-    }
-    
-    for (const blendshape of categories) {
-      const multiplier = multipliers[blendshape.categoryName] ?? 1.0
-      const adjustedScore = Math.min(blendshape.score * multiplier, 1.0) // Clamp to 1.0
-      coefsMap.set(blendshape.categoryName, adjustedScore)
-    }
-    
-    return coefsMap
   }
 
   /**
