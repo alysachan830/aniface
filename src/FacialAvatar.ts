@@ -37,7 +37,6 @@ export class FacialAvatar {
   private isRunning: boolean = false
   private isInitialized: boolean = false
   private animationFrameId: number | null = null
-  private lastProcessTime: number = 0
   private noFaceDetectedCount: number = 0
   private readonly NO_FACE_THRESHOLD = 5 // Frames before triggering callback
 
@@ -142,7 +141,6 @@ export class FacialAvatar {
     }
     
     this.isRunning = true
-    this.lastProcessTime = performance.now()
     this.processFrame()
     console.log('▶️  Avatar started')
   }
@@ -175,13 +173,6 @@ export class FacialAvatar {
     
     this.animationFrameId = requestAnimationFrame(() => this.processFrame())
     
-    // Throttle processing to avoid overload (process every ~16ms = 60fps)
-    const now = performance.now()
-    if (now - this.lastProcessTime < 16) {
-      return
-    }
-    this.lastProcessTime = now
-    
     if (!this.landmarkManager || !this.avatarRenderer) {
       return
     }
@@ -213,6 +204,9 @@ export class FacialAvatar {
           }
         }
       }
+      
+      // Render the scene
+      this.avatarRenderer.render()
       
     } catch (error) {
       console.error('Error processing frame:', error)

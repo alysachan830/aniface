@@ -56,7 +56,6 @@ export class AvatarRenderer {
   private controls: OrbitControls | null = null
   private avatar: Avatar | null = null
   private landmarkQueue: FaceLandmarkerResult[] = []
-  private animationFrameId: number | null = null
   
   private config: Required<AvatarRendererConfig>
 
@@ -80,7 +79,6 @@ export class AvatarRenderer {
   async initialize(): Promise<void> {
     this.setupScene()
     await this.loadAvatar()
-    this.startRenderLoop()
   }
 
   /**
@@ -132,32 +130,17 @@ export class AvatarRenderer {
   }
 
   /**
-   * Start the render loop
+   * Render a single frame
+   * This should be called from the main animation loop
    */
-  private startRenderLoop(): void {
-    const render = () => {
-      if (!this.renderer || !this.scene || !this.camera) return
-      
-      this.animationFrameId = requestAnimationFrame(render)
-      
-      if (this.controls) {
-        this.controls.update()
-      }
-      
-      this.renderer.render(this.scene, this.camera)
+  render(): void {
+    if (!this.renderer || !this.scene || !this.camera) return
+    
+    if (this.controls) {
+      this.controls.update()
     }
     
-    render()
-  }
-
-  /**
-   * Stop the render loop
-   */
-  private stopRenderLoop(): void {
-    if (this.animationFrameId !== null) {
-      cancelAnimationFrame(this.animationFrameId)
-      this.animationFrameId = null
-    }
+    this.renderer.render(this.scene, this.camera)
   }
 
   /**
@@ -268,8 +251,6 @@ export class AvatarRenderer {
    * Cleanup resources
    */
   destroy(): void {
-    this.stopRenderLoop()
-    
     if (this.avatar) {
       this.avatar.destroy()
       this.avatar = null
