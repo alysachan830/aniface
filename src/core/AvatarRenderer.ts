@@ -179,25 +179,8 @@ export class AvatarRenderer {
       throw new Error('Scene not initialized')
     }
     
-    return new Promise((resolve, reject) => {
-      this.avatar = new Avatar(this.modelPath, this.scene!)
-      
-      // Poll until avatar is loaded
-      const checkLoaded = setInterval(() => {
-        if (this.avatar?.loaded) {
-          clearInterval(checkLoaded)
-          resolve()
-        }
-      }, 100)
-      
-      // Timeout after 30 seconds
-      setTimeout(() => {
-        if (!this.avatar?.loaded) {
-          clearInterval(checkLoaded)
-          reject(new Error('Avatar loading timeout'))
-        }
-      }, 30000)
-    })
+    this.avatar = new Avatar(this.modelPath, this.scene)
+    await this.avatar.initialize()
   }
 
   /**

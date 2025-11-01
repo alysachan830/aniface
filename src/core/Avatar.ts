@@ -33,69 +33,70 @@ export class Avatar {
     
     // Set the MeshoptDecoder for compressed files
     this.loader.setMeshoptDecoder(MeshoptDecoder)
-    
-    // Start loading the model
-    this.loadModel(url)
   }
 
   /**
-   * Load a GLB model from URL
+   * Initialize the avatar by loading the model
+   * Must be called after construction
    */
-  private loadModel(url: string): void {
-    this.url = url
+  async initialize(): Promise<void> {
+    const url = this.url
     
     console.log('Loading avatar model from:', url)
     
-    this.loader.load(
-      url,
-      // Success callback
-      (gltf: GLTF) => {
-        if (this.gltf) {
-          // Reset if a previous model was loaded
-          this.scene.remove(this.gltf.scene)
-          this.morphTargetMeshes = []
-          this.root = null
+    return new Promise((resolve, reject) => {
+      this.loader.load(
+        url,
+        // Success callback
+        (gltf: GLTF) => {
+          if (this.gltf) {
+            // Reset if a previous model was loaded
+            this.scene.remove(this.gltf.scene)
+            this.morphTargetMeshes = []
+            this.root = null
+          }
+          
+          this.gltf = gltf
+          this.scene.add(gltf.scene)
+          this.initializeLoadedModel(gltf)
+          this.loaded = true
+          
+          // Center the model
+          const box = new THREE.Box3().setFromObject(gltf.scene)
+          const center = box.getCenter(new THREE.Vector3())
+          gltf.scene.position.x = -center.x
+          gltf.scene.position.y = -center.y
+          gltf.scene.position.z = -center.z
+          
+          // Face forward
+          gltf.scene.rotation.y = Math.PI
+          
+          // Default scale
+          gltf.scene.scale.set(1, 1, 1)
+          
+          console.log('✅ Avatar model loaded successfully')
+          resolve()
+        },
+        // Progress callback
+        (progress) => {
+          const percentage = Math.round(100.0 * (progress.loaded / progress.total))
+          console.log(`Loading model... ${percentage}%`)
+        },
+        // Error callback
+        (error: unknown) => {
+          console.error('Error loading avatar model:', error)
+          console.error('Failed URL:', this.url)
+          const err = error instanceof Error ? error : new Error(String(error))
+          reject(new Error(`Failed to load avatar model: ${err.message}`))
         }
-        
-        this.gltf = gltf
-        this.scene.add(gltf.scene)
-        this.init(gltf)
-        this.loaded = true
-        
-        // Center the model
-        const box = new THREE.Box3().setFromObject(gltf.scene)
-        const center = box.getCenter(new THREE.Vector3())
-        gltf.scene.position.x = -center.x
-        gltf.scene.position.y = -center.y
-        gltf.scene.position.z = -center.z
-        
-        // Face forward
-        gltf.scene.rotation.y = Math.PI
-        
-        // Default scale
-        gltf.scene.scale.set(1, 1, 1)
-        
-        console.log('✅ Avatar model loaded successfully')
-      },
-      // Progress callback
-      (progress) => {
-        const percentage = Math.round(100.0 * (progress.loaded / progress.total))
-        console.log(`Loading model... ${percentage}%`)
-      },
-      // Error callback
-      (error: unknown) => {
-        console.error('Error loading avatar model:', error)
-        console.error('Failed URL:', this.url)
-        const err = error instanceof Error ? error : new Error(String(error))
-        throw new Error(`Failed to load avatar model: ${err.message}`)
-      }
-    )
+      )
+    })
   }
 
   /**
    * Initialize the loaded model - find bones and morph targets
    */
-  private init(gltf: GLTF): void {
+  private initializeLoadedModel(gltf: GLTF): void {
     gltf.scene.traverse((object) => {
       // Find root bone
       if (object instanceof THREE.Bone && !this.root) {
