@@ -211,6 +211,8 @@ export class AvatarRenderer {
         const faceBlendshape = results.faceBlendshapes[0]
         if (faceBlendshape && faceBlendshape.categories) {
           const coefsMap = retargetBlendshapes(faceBlendshape.categories, this.config.blendshapeMultipliers)
+            console.log('coefsMap')
+            console.log(coefsMap)
           this.avatar.updateBlendshapes(coefsMap)
         }
       }

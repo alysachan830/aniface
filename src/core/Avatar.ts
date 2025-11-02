@@ -14,6 +14,15 @@ export interface ApplyMatrixOptions {
 }
 
 /**
+ * Cache entry for fast blendshape updates
+ */
+interface BlendshapeCache {
+  mesh: THREE.Mesh
+  influences: number[]
+  index: number
+}
+
+/**
  * Avatar class - Loads and animates GLB models with blendshapes
  */
 export class Avatar {
@@ -23,6 +32,9 @@ export class Avatar {
   private gltf: GLTF | null = null
   private morphTargetMeshes: THREE.Mesh[] = []
   private root: THREE.Bone | null = null
+  
+  // Cache for O(1) blendshape updates
+  private blendshapeCache: Map<string, BlendshapeCache[]> = new Map()
   
   public loaded: boolean = false
 
@@ -53,6 +65,7 @@ export class Avatar {
             // Reset if a previous model was loaded
             this.scene.remove(this.gltf.scene)
             this.morphTargetMeshes = []
+            this.blendshapeCache.clear()
             this.root = null
           }
           
@@ -98,6 +111,8 @@ export class Avatar {
    */
   private initializeLoadedModel(gltf: GLTF): void {
     gltf.scene.traverse((object) => {
+        console.log('object: ')
+        console.log(object)
       // Find root bone
       if (object instanceof THREE.Bone && !this.root) {
         this.root = object
@@ -122,25 +137,60 @@ export class Avatar {
     
     if (this.morphTargetMeshes.length === 0) {
       console.warn('No morph targets found - avatar will not have facial expressions')
+    } else {
+      // Build blendshape cache for fast updates
+      this.buildBlendshapeCache()
     }
   }
 
   /**
-   * Update blendshape values
-   * @param blendshapes - Map of blendshape names to values (0-1)
+   * Build cache mapping blendshape names to mesh/index pairs
+   * This enables O(1) blendshape updates instead of O(n*m) lookups
    */
-  updateBlendshapes(blendshapes: Map<string, number>): void {
+  private buildBlendshapeCache(): void {
+    this.blendshapeCache.clear()
+    
     for (const mesh of this.morphTargetMeshes) {
       if (!mesh.morphTargetDictionary || !mesh.morphTargetInfluences) {
         continue
       }
       
-      for (const [name, value] of blendshapes) {
-        if (name in mesh.morphTargetDictionary) {
-          const idx = mesh.morphTargetDictionary[name]
-          if (idx !== undefined && mesh.morphTargetInfluences[idx] !== undefined) {
-            mesh.morphTargetInfluences[idx] = value
-          }
+      // For each blendshape in this mesh, add to cache
+      for (const [blendshapeName, index] of Object.entries(mesh.morphTargetDictionary)) {
+        if (index === undefined) continue
+        
+        // Get or create array for this blendshape name
+        let cacheEntries = this.blendshapeCache.get(blendshapeName)
+        if (!cacheEntries) {
+          cacheEntries = []
+          this.blendshapeCache.set(blendshapeName, cacheEntries)
+        }
+        
+        // Add this mesh/index pair to the cache
+        cacheEntries.push({
+          mesh,
+          influences: mesh.morphTargetInfluences,
+          index
+        })
+      }
+    }
+    
+    console.log(`Built blendshape cache with ${this.blendshapeCache.size} unique blendshapes`)
+  }
+
+  /**
+   * Update blendshape values
+   * Uses cached indices for O(1) performance instead of O(n*m) lookups
+   * @param blendshapes - Map of blendshape names to values (0-1)
+   */
+  updateBlendshapes(blendshapes: Map<string, number>): void {
+    for (const [name, value] of blendshapes) {
+      const cacheEntries = this.blendshapeCache.get(name)
+      
+      if (cacheEntries) {
+        // Direct O(1) access using cached indices
+        for (const entry of cacheEntries) {
+          entry.influences[entry.index] = value
         }
       }
     }
@@ -208,6 +258,7 @@ export class Avatar {
       this.scene.remove(this.gltf.scene)
     }
     this.morphTargetMeshes = []
+    this.blendshapeCache.clear()
     this.root = null
     this.gltf = null
     this.loaded = false
