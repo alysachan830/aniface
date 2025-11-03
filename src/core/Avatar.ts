@@ -33,7 +33,6 @@ export class Avatar {
   private morphTargetMeshes: THREE.Mesh[] = []
   private root: THREE.Bone | null = null
   
-  // Cache for O(1) blendshape updates
   private blendshapeCache: Map<string, BlendshapeCache[]> = new Map()
   
   public loaded: boolean = false
@@ -143,7 +142,7 @@ export class Avatar {
 
   /**
    * Build cache mapping blendshape names to mesh/index pairs
-   * This enables O(1) blendshape updates instead of O(n*m) lookups
+   * This enables O(1) blendshape updates
    */
   private buildBlendshapeCache(): void {
     this.blendshapeCache.clear()
@@ -178,7 +177,7 @@ export class Avatar {
 
   /**
    * Update blendshape values
-   * Uses cached indices for O(1) performance instead of O(n*m) lookups
+   * Uses cached indices for O(1) performance
    * @param blendshapes - Map of blendshape names to values (0-1)
    */
   updateBlendshapes(blendshapes: Map<string, number>): void {
@@ -186,7 +185,6 @@ export class Avatar {
       const cacheEntries = this.blendshapeCache.get(name)
       
       if (cacheEntries) {
-        // Direct O(1) access using cached indices
         for (const entry of cacheEntries) {
           entry.influences[entry.index] = value
         }
