@@ -35,6 +35,13 @@ export class Avatar {
   
   private blendshapeCache: Map<string, BlendshapeCache[]> = new Map()
   
+  // Reusable objects to avoid allocations in hot paths
+  private _tempVector3: THREE.Vector3 = new THREE.Vector3()
+  private _tempMatrix4: THREE.Matrix4 = new THREE.Matrix4()
+  private _tempQuaternion: THREE.Quaternion = new THREE.Quaternion()
+  private _tempEuler: THREE.Euler = new THREE.Euler()
+  private _tempBox3: THREE.Box3 = new THREE.Box3()
+  
   public loaded: boolean = false
 
   constructor(url: string, scene: THREE.Scene) {
@@ -73,9 +80,9 @@ export class Avatar {
           this.initializeLoadedModel(gltf)
           this.loaded = true
           
-          // Center the model
-          const box = new THREE.Box3().setFromObject(gltf.scene)
-          const center = box.getCenter(new THREE.Vector3())
+          // Center the model (reuse temp objects to avoid allocation)
+          this._tempBox3.setFromObject(gltf.scene)
+          const center = this._tempBox3.getCenter(this._tempVector3)
           gltf.scene.position.x = -center.x
           gltf.scene.position.y = -center.y
           gltf.scene.position.z = -center.z
@@ -202,12 +209,13 @@ export class Avatar {
     
     if (!this.gltf) return
     
-    // Apply scale
-    matrix.scale(new THREE.Vector3(scale, scale, scale))
+    // Apply scale (reuse temp vector to avoid allocation)
+    this._tempVector3.set(scale, scale, scale)
+    matrix.scale(this._tempVector3)
     
-    // Fix horizontal mirroring by flipping X-axis
-    const flipMatrix = new THREE.Matrix4().makeScale(-1, 1, 1)
-    matrix.premultiply(flipMatrix)
+    // Fix horizontal mirroring by flipping X-axis (reuse temp matrix)
+    this._tempMatrix4.makeScale(-1, 1, 1)
+    matrix.premultiply(this._tempMatrix4)
     
     // Apply matrix to the avatar
     this.gltf.scene.matrixAutoUpdate = false
@@ -224,10 +232,10 @@ export class Avatar {
       this.root.position.copy(offset)
       
       if (rotation) {
-        const offsetQuat = new THREE.Quaternion().setFromEuler(
-          new THREE.Euler(rotation.x, rotation.y, rotation.z)
-        )
-        this.root.quaternion.copy(offsetQuat)
+        // Reuse temp objects to avoid allocation
+        this._tempEuler.set(rotation.x, rotation.y, rotation.z)
+        this._tempQuaternion.setFromEuler(this._tempEuler)
+        this.root.quaternion.copy(this._tempQuaternion)
       }
     }
   }
