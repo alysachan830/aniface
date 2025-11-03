@@ -57,6 +57,10 @@ export class AvatarRenderer {
   private avatar: Avatar | null = null
   private landmarkQueue: FaceLandmarkerResult[] = []
   
+  // Reusable objects to avoid allocations in hot paths
+  private _tempMatrix4: THREE.Matrix4 = new THREE.Matrix4()
+  private _tempVector3: THREE.Vector3 = new THREE.Vector3()
+  
   private config: Required<AvatarRendererConfig>
 
   constructor(config: AvatarRendererConfig) {
@@ -197,12 +201,13 @@ export class AvatarRenderer {
       if (results.facialTransformationMatrixes && results.facialTransformationMatrixes.length > 0) {
         const transformMatrix = results.facialTransformationMatrixes[0]
         if (transformMatrix && transformMatrix.data) {
-            const matrix = new THREE.Matrix4().fromArray(transformMatrix.data)
-          this.avatar.applyMatrix(matrix, { scale: 40 })
+          // Reuse temp objects to avoid allocation
+          this._tempMatrix4.fromArray(transformMatrix.data)
+          this.avatar.applyMatrix(this._tempMatrix4, { scale: 40 })
           
           // Optional: offset root bone
-          const headPos = new THREE.Vector3(0, 0, 0)
-          this.avatar.offsetRoot(headPos)
+          this._tempVector3.set(0, 0, 0)
+          this.avatar.offsetRoot(this._tempVector3)
         }
       }
       
