@@ -111,8 +111,6 @@ export class Avatar {
    */
   private initializeLoadedModel(gltf: GLTF): void {
     gltf.scene.traverse((object) => {
-        console.log('object: ')
-        console.log(object)
       // Find root bone
       if (object instanceof THREE.Bone && !this.root) {
         this.root = object
