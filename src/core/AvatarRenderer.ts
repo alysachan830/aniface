@@ -55,7 +55,6 @@ export class AvatarRenderer {
   private renderer: THREE.WebGLRenderer | null = null
   private controls: OrbitControls | null = null
   private avatar: Avatar | null = null
-  private landmarkQueue: FaceLandmarkerResult[] = []
   
   // Reusable objects to avoid allocations in hot paths
   private _tempMatrix4: THREE.Matrix4 = new THREE.Matrix4()
@@ -177,13 +176,7 @@ export class AvatarRenderer {
   processLandmarks(results: FaceLandmarkerResult | null): void {
     if (!results) return
     
-    // If avatar not ready, queue the landmarks
     if (!this.avatar || !this.avatar.loaded) {
-      this.landmarkQueue.push(results)
-      // Keep only the most recent 5 to avoid memory issues
-      if (this.landmarkQueue.length > 5) {
-        this.landmarkQueue.shift()
-      }
       return
     }
     
@@ -273,7 +266,6 @@ export class AvatarRenderer {
     
     this.scene = null
     this.camera = null
-    this.landmarkQueue = []
   }
 }
 
