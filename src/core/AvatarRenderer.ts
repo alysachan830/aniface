@@ -48,8 +48,6 @@ export interface AvatarRendererConfig {
  * ```
  */
 export class AvatarRenderer {
-  private canvas: HTMLCanvasElement
-  private modelPath: string
   private scene: THREE.Scene | null = null
   private camera: THREE.PerspectiveCamera | null = null
   private renderer: THREE.WebGLRenderer | null = null
@@ -63,9 +61,6 @@ export class AvatarRenderer {
   private config: Required<AvatarRendererConfig>
 
   constructor(config: AvatarRendererConfig) {
-    this.canvas = config.canvas
-    this.modelPath = config.modelPath
-    
     this.config = {
       canvas: config.canvas,
       modelPath: config.modelPath,
@@ -92,7 +87,7 @@ export class AvatarRenderer {
     this.scene = new THREE.Scene()
     
     // Set up camera
-    const aspect = this.canvas.width / this.canvas.height || 1
+    const aspect = this.config.canvas.width / this.config.canvas.height || 1
     this.camera = new THREE.PerspectiveCamera(
       this.config.fov,
       aspect,
@@ -103,11 +98,11 @@ export class AvatarRenderer {
     
     // Set up WebGL renderer
     this.renderer = new THREE.WebGLRenderer({
-      canvas: this.canvas,
+      canvas: this.config.canvas,
       alpha: true,
       antialias: true
     })
-    this.renderer.setSize(this.canvas.width || 320, this.canvas.height || 240)
+    this.renderer.setSize(this.config.canvas.width || 320, this.config.canvas.height || 240)
     this.renderer.outputColorSpace = THREE.SRGBColorSpace
     
     // Add lighting
@@ -165,7 +160,7 @@ export class AvatarRenderer {
       throw new Error('Scene not initialized')
     }
     
-    this.avatar = new Avatar(this.modelPath, this.scene)
+    this.avatar = new Avatar(this.config.modelPath, this.scene)
     await this.avatar.initialize()
   }
 
