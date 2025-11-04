@@ -36,6 +36,7 @@ export type {
 
 export type {
   AvatarRendererConfig,
+  CameraConfig,
   LightingConfig
 } from './core/AvatarRenderer'
 

@@ -9,6 +9,16 @@ import { Avatar, type LoadModelOptions } from './Avatar'
 import { retargetBlendshapes } from '../utils/blendshapeRetargeting'
 
 /**
+ * Camera configuration
+ */
+export interface CameraConfig {
+  /** Camera near clipping plane */
+  near: number
+  /** Camera far clipping plane */
+  far: number
+}
+
+/**
  * Lighting configuration
  */
 export interface LightingConfig {
@@ -39,6 +49,9 @@ export interface AvatarRendererConfig {
   /** Camera field of view in degrees (default: 60) */
   fov?: number
   
+  /** Camera configuration (optional, defaults: near=0.01, far=2000) */
+  cameraConfig?: Partial<CameraConfig>
+  
   /** Custom blendshape multipliers to adjust expression intensity */
   blendshapeMultipliers?: Record<string, number>
   
@@ -52,7 +65,8 @@ export interface AvatarRendererConfig {
 /**
  * Internal configuration with all defaults applied
  */
-interface AvatarRendererInternalConfig extends Required<Omit<AvatarRendererConfig, 'lightingConfig'>> {
+interface AvatarRendererInternalConfig extends Required<Omit<AvatarRendererConfig, 'lightingConfig' | 'cameraConfig'>> {
+  cameraConfig: CameraConfig
   lightingConfig: LightingConfig
 }
 
@@ -64,6 +78,11 @@ interface AvatarRendererInternalConfig extends Required<Omit<AvatarRendererConfi
  * const renderer = new AvatarRenderer({
  *   canvas: document.getElementById('avatar'),
  *   modelPath: '/models/avatar.glb',
+ *   // Optional: customize camera
+ *   cameraConfig: {
+ *     near: 0.01,
+ *     far: 1000
+ *   },
  *   // Optional: customize lighting
  *   lightingConfig: {
  *     ambientIntensity: 0.6,
@@ -98,6 +117,10 @@ export class AvatarRenderer {
       enableControls: config.enableControls ?? true,
       enableZoom: config.enableZoom ?? false,
       fov: config.fov ?? 60,
+      cameraConfig: {
+        near: config.cameraConfig?.near ?? 0.01,
+        far: config.cameraConfig?.far ?? 2000
+      },
       blendshapeMultipliers: config.blendshapeMultipliers ?? {},
       modelOptions: config.modelOptions ?? {},
       lightingConfig: {
@@ -128,8 +151,8 @@ export class AvatarRenderer {
     this.camera = new THREE.PerspectiveCamera(
       this.config.fov,
       aspect,
-      0.01,
-      2000
+      this.config.cameraConfig.near,
+      this.config.cameraConfig.far
     )
 
     // Set up WebGL renderer
