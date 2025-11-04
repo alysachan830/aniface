@@ -96,10 +96,9 @@ export class AvatarRenderer {
       this.config.fov,
       aspect,
       0.01,
-      5000
+      2000,
     )
-    this.camera.position.z = 5
-    
+
     // Set up WebGL renderer
     this.renderer = new THREE.WebGLRenderer({
       canvas: this.config.canvas,
