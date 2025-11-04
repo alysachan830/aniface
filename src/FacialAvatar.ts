@@ -132,20 +132,12 @@ export class FacialAvatar {
    */
   private cleanupResources(): void {
     if (this.landmarkManager) {
-      try {
-        this.landmarkManager.destroy()
-      } catch (error) {
-        console.error('Error cleaning up landmark manager:', error)
-      }
+      this.landmarkManager.destroy()
       this.landmarkManager = null
     }
     
     if (this.avatarRenderer) {
-      try {
-        this.avatarRenderer.destroy()
-      } catch (error) {
-        console.error('Error cleaning up avatar renderer:', error)
-      }
+      this.avatarRenderer.destroy()
       this.avatarRenderer = null
     }
     
