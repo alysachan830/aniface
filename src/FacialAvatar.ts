@@ -100,7 +100,8 @@ export class FacialAvatar {
         enableControls: this.config.enableControls ?? false,
         enableZoom: this.config.enableZoom ?? false,
         fov: this.config.fov ?? 60,
-        blendshapeMultipliers: this.config.blendshapeMultipliers
+        blendshapeMultipliers: this.config.blendshapeMultipliers,
+        modelOptions: this.config.modelOptions
       })
       
       await this.avatarRenderer.initialize()

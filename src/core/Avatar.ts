@@ -14,6 +14,20 @@ export interface ApplyMatrixOptions {
 }
 
 /**
+ * Options for loading and positioning the model
+ */
+export interface LoadModelOptions {
+  /** Center the model at origin. Default: true */
+  center?: boolean
+  /** Apply automatic rotation. Default: true */
+  autoRotate?: boolean
+  /** Rotation in radians around Y-axis. Default: Math.PI (180°) */
+  rotation?: number
+  /** Uniform scale factor. Default: 1 */
+  scale?: number
+}
+
+/**
  * Cache entry for fast blendshape updates
  */
 interface BlendshapeCache {
@@ -32,6 +46,7 @@ export class Avatar {
   private gltf: GLTF | null = null
   private morphTargetMeshes: THREE.Mesh[] = []
   private root: THREE.Bone | null = null
+  private options: Required<LoadModelOptions>
   
   private blendshapeCache: Map<string, BlendshapeCache[]> = new Map()
   
@@ -44,10 +59,19 @@ export class Avatar {
   
   public loaded: boolean = false
 
-  constructor(url: string, scene: THREE.Scene) {
+  constructor(url: string, scene: THREE.Scene, options: LoadModelOptions = {}) {
     this.url = url
     this.scene = scene
     this.loader = new GLTFLoader()
+    
+    // Set default options
+    this.options = {
+      center: true,
+      autoRotate: true,
+      rotation: Math.PI,
+      scale: 1,
+      ...options
+    }
     
     // Set the MeshoptDecoder for compressed files
     this.loader.setMeshoptDecoder(MeshoptDecoder)
@@ -80,18 +104,23 @@ export class Avatar {
           this.initializeLoadedModel(gltf)
           this.loaded = true
           
-          // Center the model (reuse temp objects to avoid allocation)
-          this._tempBox3.setFromObject(gltf.scene)
-          const center = this._tempBox3.getCenter(this._tempVector3)
-          gltf.scene.position.x = -center.x
-          gltf.scene.position.y = -center.y
-          gltf.scene.position.z = -center.z
+          // Apply transformations based on options
+          if (this.options.center) {
+            // Center the model (reuse temp objects to avoid allocation)
+            this._tempBox3.setFromObject(gltf.scene)
+            const center = this._tempBox3.getCenter(this._tempVector3)
+            gltf.scene.position.x = -center.x
+            gltf.scene.position.y = -center.y
+            gltf.scene.position.z = -center.z
+          }
           
-          // Face forward
-          gltf.scene.rotation.y = Math.PI
+          // Apply rotation if enabled
+          if (this.options.autoRotate) {
+            gltf.scene.rotation.y = this.options.rotation
+          }
           
-          // Default scale
-          gltf.scene.scale.set(1, 1, 1)
+          // Apply scale
+          gltf.scene.scale.set(this.options.scale, this.options.scale, this.options.scale)
           
           console.log('✅ Avatar model loaded successfully')
           resolve()

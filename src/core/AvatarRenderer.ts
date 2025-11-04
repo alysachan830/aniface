@@ -5,7 +5,7 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import type { FaceLandmarkerResult } from '@mediapipe/tasks-vision'
-import { Avatar } from './Avatar'
+import { Avatar, type LoadModelOptions } from './Avatar'
 import { retargetBlendshapes } from '../utils/blendshapeRetargeting'
 
 /**
@@ -29,6 +29,9 @@ export interface AvatarRendererConfig {
   
   /** Custom blendshape multipliers to adjust expression intensity */
   blendshapeMultipliers?: Record<string, number>
+  
+  /** Model loading options */
+  modelOptions?: LoadModelOptions
 }
 
 /**
@@ -67,7 +70,8 @@ export class AvatarRenderer {
       enableControls: config.enableControls ?? true,
       enableZoom: config.enableZoom ?? false,
       fov: config.fov ?? 60,
-      blendshapeMultipliers: config.blendshapeMultipliers ?? {}
+      blendshapeMultipliers: config.blendshapeMultipliers ?? {},
+      modelOptions: config.modelOptions ?? {}
     }
   }
 
@@ -160,7 +164,7 @@ export class AvatarRenderer {
       throw new Error('Scene not initialized')
     }
     
-    this.avatar = new Avatar(this.config.modelPath, this.scene)
+    this.avatar = new Avatar(this.config.modelPath, this.scene, this.config.modelOptions)
     await this.avatar.initialize()
   }
 

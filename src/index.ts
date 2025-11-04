@@ -39,7 +39,8 @@ export type {
 } from './core/AvatarRenderer'
 
 export type {
-  ApplyMatrixOptions
+  ApplyMatrixOptions,
+  LoadModelOptions
 } from './core/Avatar'
 
 export type {
