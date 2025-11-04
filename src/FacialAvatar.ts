@@ -115,12 +115,41 @@ export class FacialAvatar {
       const err = error instanceof Error ? error : new Error(String(error))
       console.error('❌ Failed to initialize FacialAvatar:', err)
       
+      // Cleanup any partially initialized resources to prevent memory leaks
+      this.cleanupResources()
+      
       if (this.config.onError) {
         this.config.onError(err)
       }
       
       throw err
     }
+  }
+
+  /**
+   * Cleanup all resources and reset state
+   * Used during initialization failure and destruction
+   */
+  private cleanupResources(): void {
+    if (this.landmarkManager) {
+      try {
+        this.landmarkManager.destroy()
+      } catch (error) {
+        console.error('Error cleaning up landmark manager:', error)
+      }
+      this.landmarkManager = null
+    }
+    
+    if (this.avatarRenderer) {
+      try {
+        this.avatarRenderer.destroy()
+      } catch (error) {
+        console.error('Error cleaning up avatar renderer:', error)
+      }
+      this.avatarRenderer = null
+    }
+    
+    this.isInitialized = false
   }
 
   /**
@@ -273,18 +302,8 @@ export class FacialAvatar {
     console.log('🧹 Destroying FacialAvatar...')
     
     this.stop()
+    this.cleanupResources()
     
-    if (this.landmarkManager) {
-      this.landmarkManager.destroy()
-      this.landmarkManager = null
-    }
-    
-    if (this.avatarRenderer) {
-      this.avatarRenderer.destroy()
-      this.avatarRenderer = null
-    }
-    
-    this.isInitialized = false
     console.log('✅ FacialAvatar destroyed')
   }
 }
