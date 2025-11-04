@@ -84,11 +84,7 @@ export class FacialAvatar {
       console.log('🎭 Initializing FacialAvatar...')
       
       // Initialize landmark manager
-      this.landmarkManager = new FacialLandmarkManager({
-        delegate: this.config.delegate ?? 'GPU',
-        outputFaceBlendshapes: true,
-        outputFacialTransformationMatrixes: true
-      })
+      this.landmarkManager = new FacialLandmarkManager(this.config.landmarkConfig)
       
       await this.landmarkManager.initialize()
       console.log('✅ Landmark manager initialized')

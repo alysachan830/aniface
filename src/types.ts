@@ -5,6 +5,7 @@
 import type { FaceLandmarkerResult } from '@mediapipe/tasks-vision'
 import type { MediaPipeBlendshapeName } from './utils/blendshapeRetargeting'
 import type { LoadModelOptions } from './core/Avatar'
+import type { FacialLandmarkManagerConfig } from './core/FacialLandmarkManager'
 
 /**
  * Configuration options for FacialAvatar
@@ -43,11 +44,11 @@ export interface FacialAvatarConfig {
   /** Camera field of view in degrees (default: 60) */
   fov?: number
   
-  /** Delegate for MediaPipe processing: 'CPU' or 'GPU' (default: 'GPU') */
-  delegate?: 'CPU' | 'GPU'
-  
   /** Model loading options (position, rotation, scale) */
   modelOptions?: LoadModelOptions
+  
+  /** Landmark detection configuration (MediaPipe settings) */
+  landmarkConfig?: FacialLandmarkManagerConfig
 }
 
 /**

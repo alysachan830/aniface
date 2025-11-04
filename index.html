@@ -313,6 +313,7 @@
     }
 
     // Initialize avatar system
+    // TODO: Re-organize the config here
     async function initAvatar() {
       try {
         setStatus('Loading avatar system...', 'loading')
@@ -321,16 +322,35 @@
           videoElement: webcam,
           canvasElement: canvas,
           modelPath: './examples/raccoon_head_small.glb',
-          // Allow user to control the avatar three js scene
+          
+          // Camera controls
           enableControls: false,
           enableZoom: false,
           
+          // Blendshape adjustments
           blendshapeMultipliers: {
             eyeBlinkLeft: 1.2,
             eyeBlinkRight: 1.2,
             browInnerUp: 1.2,
             mouthSmile: 1.1
           },
+          
+          // Model positioning (optional)
+          // modelOptions: {
+          //   center: true,           // Center model at origin
+          //   autoRotate: true,       // Rotate 180° to face forward
+          //   rotation: Math.PI,      // Custom rotation in radians
+          //   scale: 1                // Scale factor
+          // },
+          
+          // Landmark detection settings (optional)
+          // landmarkConfig: {
+          //   delegate: 'GPU',        // 'GPU' or 'CPU'
+          //   outputFaceBlendshapes: true,
+          //   outputFacialTransformationMatrixes: true,
+          //   modelAssetPath: '...',  // Custom MediaPipe model path
+          //   wasmPath: '...'         // Custom WASM path for offline usage
+          // },
           
           onReady: () => {
             console.log('✅ Avatar ready')
