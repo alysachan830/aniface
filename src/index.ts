@@ -35,7 +35,8 @@ export type {
 } from './core/FacialLandmarkManager'
 
 export type {
-  AvatarRendererConfig
+  AvatarRendererConfig,
+  LightingConfig
 } from './core/AvatarRenderer'
 
 export type {

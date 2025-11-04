@@ -9,6 +9,18 @@ import { Avatar, type LoadModelOptions } from './Avatar'
 import { retargetBlendshapes } from '../utils/blendshapeRetargeting'
 
 /**
+ * Lighting configuration
+ */
+export interface LightingConfig {
+  /** Ambient light intensity */
+  ambientIntensity: number
+  /** Directional light intensity */
+  directionalIntensity: number
+  /** Directional light position */
+  directionalPosition: [number, number, number]
+}
+
+/**
  * Configuration options for AvatarRenderer
  */
 export interface AvatarRendererConfig {
@@ -32,6 +44,16 @@ export interface AvatarRendererConfig {
   
   /** Model loading options */
   modelOptions?: LoadModelOptions
+  
+  /** Lighting configuration (optional, defaults: ambientIntensity=0.5, directionalIntensity=0.8, directionalPosition=[0,1,2]) */
+  lightingConfig?: Partial<LightingConfig>
+}
+
+/**
+ * Internal configuration with all defaults applied
+ */
+interface AvatarRendererInternalConfig extends Required<Omit<AvatarRendererConfig, 'lightingConfig'>> {
+  lightingConfig: LightingConfig
 }
 
 /**
@@ -41,7 +63,13 @@ export interface AvatarRendererConfig {
  * ```typescript
  * const renderer = new AvatarRenderer({
  *   canvas: document.getElementById('avatar'),
- *   modelPath: '/models/avatar.glb'
+ *   modelPath: '/models/avatar.glb',
+ *   // Optional: customize lighting
+ *   lightingConfig: {
+ *     ambientIntensity: 0.6,
+ *     directionalIntensity: 0.9,
+ *     directionalPosition: [1, 2, 3]
+ *   }
  * })
  * 
  * await renderer.initialize()
@@ -61,7 +89,7 @@ export class AvatarRenderer {
   private _tempMatrix4: THREE.Matrix4 = new THREE.Matrix4()
   private _tempVector3: THREE.Vector3 = new THREE.Vector3()
   
-  private config: Required<AvatarRendererConfig>
+  private config: AvatarRendererInternalConfig
 
   constructor(config: AvatarRendererConfig) {
     this.config = {
@@ -71,7 +99,12 @@ export class AvatarRenderer {
       enableZoom: config.enableZoom ?? false,
       fov: config.fov ?? 60,
       blendshapeMultipliers: config.blendshapeMultipliers ?? {},
-      modelOptions: config.modelOptions ?? {}
+      modelOptions: config.modelOptions ?? {},
+      lightingConfig: {
+        ambientIntensity: config.lightingConfig?.ambientIntensity ?? 0.5,
+        directionalIntensity: config.lightingConfig?.directionalIntensity ?? 0.8,
+        directionalPosition: config.lightingConfig?.directionalPosition ?? [0, 1, 2]
+      }
     }
   }
 
@@ -96,7 +129,7 @@ export class AvatarRenderer {
       this.config.fov,
       aspect,
       0.01,
-      2000,
+      2000
     )
 
     // Set up WebGL renderer
@@ -109,11 +142,18 @@ export class AvatarRenderer {
     this.renderer.outputColorSpace = THREE.SRGBColorSpace
     
     // Add lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5)
+    const ambientLight = new THREE.AmbientLight(
+      0xffffff,
+      this.config.lightingConfig.ambientIntensity
+    )
     this.scene.add(ambientLight)
     
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8)
-    directionalLight.position.set(0, 1, 2)
+    const directionalLight = new THREE.DirectionalLight(
+      0xffffff,
+      this.config.lightingConfig.directionalIntensity
+    )
+    const [x, y, z] = this.config.lightingConfig.directionalPosition
+    directionalLight.position.set(x, y, z)
     this.scene.add(directionalLight)
     
     // Set up camera controls
