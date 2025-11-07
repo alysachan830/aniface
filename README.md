@@ -326,3 +326,7 @@ function animate() {
 }
 animate()
 ```
+
+## License
+
+MIT - see [LICENSE](LICENSE) file for details
