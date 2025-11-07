@@ -1,24 +1,61 @@
 {
   "name": "aniface",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "0.1.0",
+  "description": "Animate 3D avatars with real-time facial tracking using MediaPipe and Three.js",
   "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:lib": "tsc -p tsconfig.build.json",
     "preview": "vite preview",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "prepublishOnly": "npm run build:lib"
   },
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "3d",
+    "avatar",
+    "facial-tracking",
+    "mediapipe",
+    "three.js",
+    "blendshapes",
+    "animation",
+    "webgl",
+    "face-detection",
+    "real-time"
+  ],
+  "author": "Alysa Chan",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alysachan830/aniface.git"
+  },
+  "bugs": {
+    "url": "https://github.com/alysachan830/aniface/issues"
+  },
+  "homepage": "https://github.com/alysachan830/aniface#readme",
+  "peerDependencies": {
+    "@mediapipe/tasks-vision": "^0.10.0",
+    "three": "^0.180.0"
+  },
   "devDependencies": {
     "@types/three": "^0.180.0",
+    "@mediapipe/tasks-vision": "^0.10.22-rc.20250304",
+    "three": "^0.180.0",
     "typescript": "^5.9.3",
     "vite": "^7.1.12"
-  },
-  "dependencies": {
-    "@mediapipe/tasks-vision": "^0.10.22-rc.20250304",
-    "three": "^0.180.0"
   }
 }
