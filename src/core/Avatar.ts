@@ -55,7 +55,6 @@ export class Avatar {
   
   // Reusable objects to avoid allocations in hot paths
   private _tempVector3: THREE.Vector3 = new THREE.Vector3()
-  private _tempVector3b: THREE.Vector3 = new THREE.Vector3()
   private _tempMatrix4: THREE.Matrix4 = new THREE.Matrix4()
   private _tempQuaternion: THREE.Quaternion = new THREE.Quaternion()
   private _tempEuler: THREE.Euler = new THREE.Euler()
@@ -151,6 +150,18 @@ export class Avatar {
    * Initialize the loaded model - find bones and morph targets
    */
   private initializeLoadedModel(gltf: GLTF): void {
+    // First pass: log all bones to help debug
+    const allBones: string[] = []
+    gltf.scene.traverse((object) => {
+      if (object instanceof THREE.Bone) {
+        allBones.push(object.name)
+      }
+    })
+    console.log('All bones in model:', allBones)
+    
+    // Collect all potential head bones, then select the best one
+    let neckBone: THREE.Bone | undefined
+    
     gltf.scene.traverse((object) => {
       // Find root bone
       if (object instanceof THREE.Bone && !this.root) {
@@ -159,18 +170,22 @@ export class Avatar {
       }
       
       // Find head bone for head-only transformations
-      if (object instanceof THREE.Bone && !this.headBone) {
+      if (object instanceof THREE.Bone) {
         const boneName = object.name.toLowerCase()
-        // Check for common head bone names used in humanoid rigs
-        // Ready Player Me uses "Head", Mixamo uses "mixamorigHead", etc.
-        if (
-          boneName === 'head' ||
-          boneName === 'neck' ||
-          boneName.includes('head') ||
-          boneName.includes('neck')
-        ) {
+        
+        // First priority: exact "head" match (overrides any previous selection)
+        if (boneName === 'head') {
           this.headBone = object
-          console.log('Found head bone:', object.name)
+          console.log('✅ Found head bone:', object.name)
+        }
+        // Store neck as fallback but keep searching for Head
+        else if (boneName === 'neck' && !neckBone) {
+          neckBone = object
+        }
+        // Second priority: contains "head" but not "neck" (e.g., "mixamorigHead")
+        else if (!this.headBone && boneName.includes('head') && !boneName.includes('neck')) {
+          this.headBone = object
+          console.log('✅ Found head-like bone:', object.name)
         }
       }
       
@@ -185,6 +200,12 @@ export class Avatar {
         }
       }
     })
+    
+    // Use neck as fallback if no head bone was found
+    if (!this.headBone && neckBone) {
+      this.headBone = neckBone
+      console.log('⚠️ Using neck bone as head:', neckBone.name)
+    }
     
     if (!this.root) {
       console.warn('No root bone found - avatar may not animate correctly')
@@ -268,22 +289,29 @@ export class Avatar {
     this._tempVector3.set(scale, scale, scale)
     matrix.scale(this._tempVector3)
     
-    // Fix horizontal mirroring by flipping X-axis (reuse temp matrix)
-    this._tempMatrix4.makeScale(-1, 1, 1)
-    matrix.premultiply(this._tempMatrix4)
+    // Fix horizontal mirroring by flipping X-axis (only for full avatar mode)
+    if (!this.options.applyTransformToHeadOnly) {
+      this._tempMatrix4.makeScale(-1, 1, 1)
+      matrix.premultiply(this._tempMatrix4)
+    }
     
     // Apply matrix based on configuration
     if (this.options.applyTransformToHeadOnly && this.headBone) {
       // Apply transformation to head bone only (for half/full-body avatars)
       // This keeps the body fixed while the head moves naturally
       
-      // Extract rotation from the transformation matrix
+      // Extract rotation as Euler angles (like the reference implementation)
+      // This prevents parent bones from inheriting the rotation
       this._tempMatrix4.copy(matrix)
-      this._tempMatrix4.decompose(this._tempVector3b, this._tempQuaternion, this._tempVector3)
+      this._tempEuler.setFromRotationMatrix(this._tempMatrix4)
       
-      // Apply rotation to head bone
-      this.headBone.quaternion.copy(this._tempQuaternion)
-      this.headBone.updateMatrix()
+      // Apply rotation directly to the head bone
+      // Mirror Y and Z axes to match user's movements
+      this.headBone.rotation.set(
+        this._tempEuler.x,    // Pitch (up/down) - keep as-is
+        -this._tempEuler.y,   // Yaw (left/right) - mirror
+        -this._tempEuler.z    // Roll (tilt) - mirror
+      )
     } else {
       // Apply transformation to entire avatar scene (for head-only models)
       this.gltf.scene.matrixAutoUpdate = false
@@ -321,6 +349,13 @@ export class Avatar {
    */
   getMorphTargetMeshes(): THREE.Mesh[] {
     return this.morphTargetMeshes
+  }
+
+  /**
+   * Check if avatar is configured for head-only transformations
+   */
+  isHeadOnlyMode(): boolean {
+    return this.options.applyTransformToHeadOnly
   }
 
   /**

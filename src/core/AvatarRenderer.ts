@@ -270,11 +270,16 @@ export class AvatarRenderer {
         if (transformMatrix && transformMatrix.data) {
           // Reuse temp objects to avoid allocation
           this._tempMatrix4.fromArray(transformMatrix.data)
-          this.avatar.applyMatrix(this._tempMatrix4, { scale: 40 })
           
-          // Optional: offset root bone
-          this._tempVector3.set(0, 0, 0)
-          this.avatar.offsetRoot(this._tempVector3)
+          // Use smaller scale for head-only mode to prevent excessive movement
+          const scale = this.avatar.isHeadOnlyMode() ? 1 : 40
+          this.avatar.applyMatrix(this._tempMatrix4, { scale })
+          
+          // Optional: offset root bone (only for full avatar mode)
+          if (!this.avatar.isHeadOnlyMode()) {
+            this._tempVector3.set(0, 0, 0)
+            this.avatar.offsetRoot(this._tempVector3)
+          }
         }
       }
       
