@@ -25,6 +25,8 @@ export interface LoadModelOptions {
   rotation?: number
   /** Uniform scale factor. Default: 1 */
   scale?: number
+  /** Apply facial transformations to head bone only (for half/full-body avatars). Default: false */
+  applyTransformToHeadOnly?: boolean
 }
 
 /**
@@ -46,12 +48,14 @@ export class Avatar {
   private gltf: GLTF | null = null
   private morphTargetMeshes: THREE.Mesh[] = []
   private root: THREE.Bone | null = null
+  private headBone: THREE.Bone | null = null
   private options: Required<LoadModelOptions>
   
   private blendshapeCache: Map<string, BlendshapeCache[]> = new Map()
   
   // Reusable objects to avoid allocations in hot paths
   private _tempVector3: THREE.Vector3 = new THREE.Vector3()
+  private _tempVector3b: THREE.Vector3 = new THREE.Vector3()
   private _tempMatrix4: THREE.Matrix4 = new THREE.Matrix4()
   private _tempQuaternion: THREE.Quaternion = new THREE.Quaternion()
   private _tempEuler: THREE.Euler = new THREE.Euler()
@@ -70,6 +74,7 @@ export class Avatar {
       autoRotate: true,
       rotation: Math.PI,
       scale: 1,
+      applyTransformToHeadOnly: false,
       ...options
     }
     
@@ -97,6 +102,7 @@ export class Avatar {
             this.morphTargetMeshes = []
             this.blendshapeCache.clear()
             this.root = null
+            this.headBone = null
           }
           
           this.gltf = gltf
@@ -152,6 +158,22 @@ export class Avatar {
         console.log('Found root bone:', object.name)
       }
       
+      // Find head bone for head-only transformations
+      if (object instanceof THREE.Bone && !this.headBone) {
+        const boneName = object.name.toLowerCase()
+        // Check for common head bone names used in humanoid rigs
+        // Ready Player Me uses "Head", Mixamo uses "mixamorigHead", etc.
+        if (
+          boneName === 'head' ||
+          boneName === 'neck' ||
+          boneName.includes('head') ||
+          boneName.includes('neck')
+        ) {
+          this.headBone = object
+          console.log('Found head bone:', object.name)
+        }
+      }
+      
       // Find meshes with morph targets (blendshapes)
       if (object instanceof THREE.Mesh) {
         object.frustumCulled = false
@@ -166,6 +188,10 @@ export class Avatar {
     
     if (!this.root) {
       console.warn('No root bone found - avatar may not animate correctly')
+    }
+    
+    if (!this.headBone) {
+      console.warn('No head bone found - full avatar will move instead of head only')
     }
     
     if (this.morphTargetMeshes.length === 0) {
@@ -246,9 +272,23 @@ export class Avatar {
     this._tempMatrix4.makeScale(-1, 1, 1)
     matrix.premultiply(this._tempMatrix4)
     
-    // Apply matrix to the avatar
-    this.gltf.scene.matrixAutoUpdate = false
-    this.gltf.scene.matrix.copy(matrix)
+    // Apply matrix based on configuration
+    if (this.options.applyTransformToHeadOnly && this.headBone) {
+      // Apply transformation to head bone only (for half/full-body avatars)
+      // This keeps the body fixed while the head moves naturally
+      
+      // Extract rotation from the transformation matrix
+      this._tempMatrix4.copy(matrix)
+      this._tempMatrix4.decompose(this._tempVector3b, this._tempQuaternion, this._tempVector3)
+      
+      // Apply rotation to head bone
+      this.headBone.quaternion.copy(this._tempQuaternion)
+      this.headBone.updateMatrix()
+    } else {
+      // Apply transformation to entire avatar scene (for head-only models)
+      this.gltf.scene.matrixAutoUpdate = false
+      this.gltf.scene.matrix.copy(matrix)
+    }
   }
 
   /**
@@ -293,6 +333,7 @@ export class Avatar {
     this.morphTargetMeshes = []
     this.blendshapeCache.clear()
     this.root = null
+    this.headBone = null
     this.gltf = null
     this.loaded = false
   }

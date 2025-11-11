@@ -160,6 +160,11 @@ export class AvatarRenderer {
       this.config.cameraConfig.near,
       this.config.cameraConfig.far
     )
+    
+    // Position camera to frame the avatar properly
+    // RPM avatars face -Z, so camera at -Z position sees the front
+    this.camera.position.set(0, 0.5, -1.5)
+    this.camera.lookAt(0, 0.5, 0)
 
     // Set up WebGL renderer
     this.renderer = new THREE.WebGLRenderer({
@@ -193,7 +198,7 @@ export class AvatarRenderer {
       this.controls.dampingFactor = 0.25
       this.controls.enableZoom = this.config.enableZoom
       this.controls.enablePan = false
-      this.controls.target.set(0, 0, 0)
+      this.controls.target.set(0, 0.5, 0)  // Focus on upper body/head area
       this.controls.update()
     }
     

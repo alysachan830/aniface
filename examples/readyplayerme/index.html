@@ -374,10 +374,11 @@
           
           // Model positioning
           modelOptions: {
-            center: true,           // Center model at origin
-            autoRotate: true,       // Rotate to face forward
-            rotation: Math.PI,      // 180° rotation
-            scale: 1                // Default scale
+            center: true,                    // Center model at origin
+            autoRotate: true,               // Don't rotate (camera will be positioned correctly)
+            rotation: Math.PI,               // Not used when autoRotate is false
+            scale: 2,                        // Default scale
+            applyTransformToHeadOnly: true   // Only move head, keep body fixed
           },
           
           onReady: () => {

@@ -5,7 +5,13 @@
  * to work better with different 3D models.
  */
 
-import type { BlendshapeCategory } from '../types'
+/**
+ * Blendshape category from MediaPipe
+ */
+export interface BlendshapeCategory {
+  categoryName: string
+  score: number
+}
 
 /**
  * Map of blendshape names to multiplier values
@@ -298,5 +304,9 @@ export const MEDIAPIPE_BLENDSHAPE_NAMES = [
  * Type for MediaPipe blendshape names
  */
 export type MediaPipeBlendshapeName = typeof MEDIAPIPE_BLENDSHAPE_NAMES[number]
+
+
+
+
 
 
