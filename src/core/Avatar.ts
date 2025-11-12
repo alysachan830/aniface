@@ -49,6 +49,8 @@ export class Avatar {
   private morphTargetMeshes: THREE.Mesh[] = []
   private root: THREE.Bone | null = null
   private headBone: THREE.Bone | null = null
+  private neckBone: THREE.Bone | null = null
+  private spine2Bone: THREE.Bone | null = null
   private options: Required<LoadModelOptions>
   
   private blendshapeCache: Map<string, BlendshapeCache[]> = new Map()
@@ -102,6 +104,8 @@ export class Avatar {
             this.blendshapeCache.clear()
             this.root = null
             this.headBone = null
+            this.neckBone = null
+            this.spine2Bone = null
           }
           
           this.gltf = gltf
@@ -150,6 +154,8 @@ export class Avatar {
    * Initialize the loaded model - find bones and morph targets
    */
   private initializeLoadedModel(gltf: GLTF): void {
+    console.log('🔍 Initializing model, scanning for bones...')
+    
     // First pass: log all bones to help debug
     const allBones: string[] = []
     gltf.scene.traverse((object) => {
@@ -158,9 +164,7 @@ export class Avatar {
       }
     })
     console.log('All bones in model:', allBones)
-    
-    // Collect all potential head bones, then select the best one
-    let neckBone: THREE.Bone | undefined
+    console.log(`Found ${allBones.length} total bones`)
     
     gltf.scene.traverse((object) => {
       // Find root bone
@@ -169,20 +173,26 @@ export class Avatar {
         console.log('Found root bone:', object.name)
       }
       
-      // Find head bone for head-only transformations
+      // Find bones for cascading animation
       if (object instanceof THREE.Bone) {
         const boneName = object.name.toLowerCase()
         
-        // First priority: exact "head" match (overrides any previous selection)
+        // Find Head bone
         if (boneName === 'head') {
           this.headBone = object
           console.log('✅ Found head bone:', object.name)
         }
-        // Store neck as fallback but keep searching for Head
-        else if (boneName === 'neck' && !neckBone) {
-          neckBone = object
+        // Find Neck bone
+        else if (boneName === 'neck' && !this.neckBone) {
+          this.neckBone = object
+          console.log('✅ Found neck bone:', object.name)
         }
-        // Second priority: contains "head" but not "neck" (e.g., "mixamorigHead")
+        // Find Spine2 bone
+        else if (boneName === 'spine2' && !this.spine2Bone) {
+          this.spine2Bone = object
+          console.log('✅ Found spine2 bone:', object.name)
+        }
+        // Fallback: contains "head" but not "neck" (e.g., "mixamorigHead")
         else if (!this.headBone && boneName.includes('head') && !boneName.includes('neck')) {
           this.headBone = object
           console.log('✅ Found head-like bone:', object.name)
@@ -202,9 +212,9 @@ export class Avatar {
     })
     
     // Use neck as fallback if no head bone was found
-    if (!this.headBone && neckBone) {
-      this.headBone = neckBone
-      console.log('⚠️ Using neck bone as head:', neckBone.name)
+    if (!this.headBone && this.neckBone) {
+      this.headBone = this.neckBone
+      console.log('⚠️ Using neck bone as head:', this.neckBone.name)
     }
     
     if (!this.root) {
@@ -213,6 +223,13 @@ export class Avatar {
     
     if (!this.headBone) {
       console.warn('No head bone found - full avatar will move instead of head only')
+    }
+    
+    // Log which bones were found for cascading animation
+    if (this.headBone && this.neckBone && this.spine2Bone) {
+      console.log('✅ All bones found for smooth cascading animation')
+    } else if (this.headBone) {
+      console.log('⚠️ Only head bone found - animation will be less smooth')
     }
     
     if (this.morphTargetMeshes.length === 0) {
@@ -297,21 +314,39 @@ export class Avatar {
     
     // Apply matrix based on configuration
     if (this.options.applyTransformToHeadOnly && this.headBone) {
-      // Apply transformation to head bone only (for half/full-body avatars)
-      // This keeps the body fixed while the head moves naturally
+      // Apply transformation with cascading rotation for smooth animation
+      // This creates natural movement by distributing rotation across multiple bones
       
       // Extract rotation as Euler angles (like the reference implementation)
-      // This prevents parent bones from inheriting the rotation
       this._tempMatrix4.copy(matrix)
       this._tempEuler.setFromRotationMatrix(this._tempMatrix4)
       
-      // Apply rotation directly to the head bone
       // Mirror Y and Z axes to match user's movements
-      this.headBone.rotation.set(
-        this._tempEuler.x,    // Pitch (up/down) - keep as-is
-        -this._tempEuler.y,   // Yaw (left/right) - mirror
-        -this._tempEuler.z    // Roll (tilt) - mirror
-      )
+      const x = this._tempEuler.x
+      const y = -this._tempEuler.y
+      const z = -this._tempEuler.z
+      
+      // Apply cascading rotation for smooth, natural animation
+      // Head: 100% of rotation
+      this.headBone.rotation.set(x, y, z)
+      
+      // Neck: 20% of rotation with slight offset (if available)
+      if (this.neckBone) {
+        this.neckBone.rotation.set(
+          x / 5 + 0.3,  // Pitch with offset
+          y / 5,         // Yaw
+          z / 5          // Roll
+        )
+      }
+      
+      // Spine2: 10% of rotation for subtle body follow (if available)
+      if (this.spine2Bone) {
+        this.spine2Bone.rotation.set(
+          x / 10,   // Pitch
+          y / 10,   // Yaw
+          z / 10    // Roll
+        )
+      }
     } else {
       // Apply transformation to entire avatar scene (for head-only models)
       this.gltf.scene.matrixAutoUpdate = false
@@ -369,6 +404,8 @@ export class Avatar {
     this.blendshapeCache.clear()
     this.root = null
     this.headBone = null
+    this.neckBone = null
+    this.spine2Bone = null
     this.gltf = null
     this.loaded = false
   }

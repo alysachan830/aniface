@@ -293,7 +293,7 @@
     const statusEl = document.getElementById('status')
 
     // Ready Player Me model URL with ARKit blendshapes
-    const RPM_MODEL_URL = 'https://models.readyplayer.me/68fde5dc34a790d44ce51470.glb?morphTargets=ARKit&useHands=false'
+    const RPM_MODEL_URL = 'https://models.readyplayer.me/691315d7a577a4cbdaf75330.glb?morphTargets=ARKit&useHands=false'
 
     // Status helper
     function setStatus(message, type = 'loading') {
@@ -362,11 +362,11 @@
           // Blendshape adjustments
           // Start with conservative values, can be adjusted based on testing
           blendshapeMultipliers: {
-            eyeBlinkLeft: 1.0,
-            eyeBlinkRight: 1.0,
-            browInnerUp: 1.0,
-            browOuterUpLeft: 1.0,
-            browOuterUpRight: 1.0,
+            eyeBlinkLeft: 1.3,
+            eyeBlinkRight: 1.3,
+            browInnerUp: 1.2,
+            browOuterUpLeft: 1.2,
+            browOuterUpRight: 1.2,
             jawOpen: 1.0,
             mouthSmileLeft: 1.0,
             mouthSmileRight: 1.0,
@@ -377,7 +377,7 @@
             center: true,                    // Center model at origin
             autoRotate: true,               // Don't rotate (camera will be positioned correctly)
             rotation: Math.PI,               // Not used when autoRotate is false
-            scale: 2.2,                        // Default scale
+            scale: 2.4,                        // Default scale
             applyTransformToHeadOnly: true   // Only move head, keep body fixed
           },
           
