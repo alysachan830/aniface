@@ -163,8 +163,9 @@ export class AvatarRenderer {
     
     // Position camera to frame the avatar properly
     // RPM avatars face -Z, so camera at -Z position sees the front
-    this.camera.position.set(0, 0.5, -1.5)
-    this.camera.lookAt(0, 0.5, 0)
+    // Positioned to focus on head/face area (y=0.8) for better framing
+    this.camera.position.set(0, 0.8, -1.5)
+    this.camera.lookAt(0, 0.8, 0)
 
     // Set up WebGL renderer
     this.renderer = new THREE.WebGLRenderer({
@@ -176,13 +177,14 @@ export class AvatarRenderer {
     this.renderer.setSize(this.config.canvas.width || 320, this.config.canvas.height || 240)
     this.renderer.outputColorSpace = THREE.SRGBColorSpace
     
-    // Add lighting
+    // Add lighting setup for better depth and visibility
     const ambientLight = new THREE.AmbientLight(
       0xffffff,
       this.config.lightingConfig.ambientIntensity
     )
     this.scene.add(ambientLight)
     
+    // Main directional light (key light)
     const directionalLight = new THREE.DirectionalLight(
       0xffffff,
       this.config.lightingConfig.directionalIntensity
@@ -191,6 +193,16 @@ export class AvatarRenderer {
     directionalLight.position.set(x, y, z)
     this.scene.add(directionalLight)
     
+    // Fill light from the opposite side to reduce harsh shadows
+    const fillLight = new THREE.DirectionalLight(0xffffff, 0.4)
+    fillLight.position.set(-2, 1, 2)
+    this.scene.add(fillLight)
+    
+    // Rim light from behind for depth and separation
+    const rimLight = new THREE.DirectionalLight(0xffffff, 0.3)
+    rimLight.position.set(0, 2, -2)
+    this.scene.add(rimLight)
+    
     // Set up camera controls
     if (this.config.enableControls) {
       this.controls = new OrbitControls(this.camera, this.renderer.domElement)
@@ -198,7 +210,7 @@ export class AvatarRenderer {
       this.controls.dampingFactor = 0.25
       this.controls.enableZoom = this.config.enableZoom
       this.controls.enablePan = false
-      this.controls.target.set(0, 0.5, 0)  // Focus on upper body/head area
+      this.controls.target.set(0, 0.8, 0)  // Focus on head/face area
       this.controls.update()
     }
     
