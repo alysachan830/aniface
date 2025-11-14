@@ -162,10 +162,9 @@ export class AvatarRenderer {
     )
     
     // Position camera to frame the avatar properly
-    // RPM avatars face -Z, so camera at -Z position sees the front
-    // Positioned to focus on head/face area (y=0.8) for better framing
-    this.camera.position.set(0, 0.8, -1.5)
-    this.camera.lookAt(0, 0.8, 0)
+    // Default position works for most models
+    this.camera.position.set(0, 0, 1.5)
+    this.camera.lookAt(0, 0, 0)
 
     // Set up WebGL renderer
     this.renderer = new THREE.WebGLRenderer({
@@ -210,7 +209,7 @@ export class AvatarRenderer {
       this.controls.dampingFactor = 0.25
       this.controls.enableZoom = this.config.enableZoom
       this.controls.enablePan = false
-      this.controls.target.set(0, 0.8, 0)  // Focus on head/face area
+      this.controls.target.set(0, 0, 0)  // Default target, adjusted for body models
       this.controls.update()
     }
     
@@ -253,6 +252,23 @@ export class AvatarRenderer {
     
     this.avatar = new Avatar(this.config.modelPath, this.scene, this.config.modelOptions)
     await this.avatar.initialize()
+    
+    // Adjust camera position for body models with head-only animation (Ready Player Me, etc.)
+    if (this.avatar.isHeadOnlyMode() && this.camera) {
+      // Body models need camera positioned higher to frame upper body/face area
+      this.camera.position.set(0, 0.5, 1.5)
+      this.camera.lookAt(0, 0.5, 0)
+
+      // Update orbit controls target if enabled
+      if (this.controls) {
+        this.controls.target.set(0, 0.5, 0)
+        this.controls.update()
+      }
+
+      console.log('📷 Camera adjusted for body model (head-only mode)')
+    } else {
+      console.log('📷 Using default camera position')
+    }
   }
 
   /**
