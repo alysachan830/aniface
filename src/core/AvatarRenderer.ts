@@ -160,11 +160,6 @@ export class AvatarRenderer {
       this.config.cameraConfig.near,
       this.config.cameraConfig.far
     )
-    
-    // Position camera to frame the avatar properly
-    // Default position works for most models
-    this.camera.position.set(0, 0, 1.5)
-    this.camera.lookAt(0, 0, 0)
 
     // Set up WebGL renderer
     this.renderer = new THREE.WebGLRenderer({
@@ -196,7 +191,7 @@ export class AvatarRenderer {
     const fillLight = new THREE.DirectionalLight(0xffffff, 0.4)
     fillLight.position.set(-2, 1, 2)
     this.scene.add(fillLight)
-    
+
     // Rim light from behind for depth and separation
     const rimLight = new THREE.DirectionalLight(0xffffff, 0.3)
     rimLight.position.set(0, 2, -2)

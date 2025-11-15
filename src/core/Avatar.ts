@@ -225,13 +225,6 @@ export class Avatar {
       console.warn('No head bone found - full avatar will move instead of head only')
     }
     
-    // Log which bones were found for cascading animation
-    if (this.headBone && this.neckBone && this.spine2Bone) {
-      console.log('✅ All bones found for smooth cascading animation')
-    } else if (this.headBone) {
-      console.log('⚠️ Only head bone found - animation will be less smooth')
-    }
-    
     if (this.morphTargetMeshes.length === 0) {
       console.warn('No morph targets found - avatar will not have facial expressions')
     } else {
