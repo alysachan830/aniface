@@ -23,6 +23,10 @@
     "build:lib": "tsc -p tsconfig.build.json",
     "preview": "vite preview",
     "type-check": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage",
     "prepublishOnly": "npm run build:lib"
   },
   "keywords": [
@@ -52,10 +56,14 @@
     "three": "^0.180.0"
   },
   "devDependencies": {
-    "@types/three": "^0.180.0",
     "@mediapipe/tasks-vision": "^0.10.22-rc.20250304",
+    "@types/node": "^24.10.1",
+    "@types/three": "^0.180.0",
+    "@vitest/ui": "^4.0.9",
+    "jsdom": "^27.2.0",
     "three": "^0.180.0",
     "typescript": "^5.9.3",
-    "vite": "^7.1.12"
+    "vite": "^7.1.12",
+    "vitest": "^4.0.9"
   }
 }
