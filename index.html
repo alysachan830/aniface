@@ -24,44 +24,65 @@
     }
 
     .container {
-      max-width: 1200px;
+      max-width: 1400px;
       width: 100%;
     }
 
     h1 {
-      text-align: center;
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-    }
-
-    .subtitle {
-      text-align: center;
-      font-size: 1.1rem;
+      font-size: 2rem;
       margin-bottom: 2rem;
-      opacity: 0.9;
+      font-weight: 400;
     }
 
     .demo-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
+      grid-template-columns: auto 1fr;
+      gap: 120px;
       margin-bottom: 2rem;
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 1200px) {
       .demo-grid {
         grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      /* Reorder: avatar first, then controls */
+      .demo-grid > .panel:first-child {
+        order: 2;
+      }
+
+      .demo-grid > .panel:last-child {
+        order: 1;
+        margin-bottom: 2rem;
+      }
+      
+      #avatar {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 4 / 3;
+      }
+
+      .webcam-overlay {
+        width: 150px;
+      }
+
+      h1 {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+
+      body {
+        padding: 10px;
+      }
+
+      .container {
+        padding: 0;
       }
     }
 
     .panel {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 0;
     }
 
     .panel h2 {
@@ -72,16 +93,9 @@
       gap: 8px;
     }
 
-    #webcam {
-      width: 100%;
-      border-radius: 8px;
-      background: #000;
-      display: block;
-    }
-
     #avatar {
-      width: 100%;
-      height: 400px;
+      width: 800px !important;
+      height: 600px !important;
       border-radius: 8px;
       background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
       display: block;
@@ -92,13 +106,23 @@
       cursor: grabbing;
     }
 
+    .webcam-overlay {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 200px;
+      z-index: 1000;
+    }
+
+    #webcam {
+      width: 100%;
+      display: block;
+      border-radius: 8px;
+      background: #000;
+    }
+
     .controls {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 0;
     }
 
     .button-group {
@@ -150,33 +174,12 @@
     }
 
     .status {
-      padding: 12px;
-      border-radius: 8px;
+      padding: 12px 0;
       margin-bottom: 15px;
       font-size: 0.95rem;
       display: flex;
       align-items: center;
       gap: 8px;
-    }
-
-    .status-loading {
-      background: rgba(59, 130, 246, 0.2);
-      border: 1px solid rgba(59, 130, 246, 0.4);
-    }
-
-    .status-success {
-      background: rgba(16, 185, 129, 0.2);
-      border: 1px solid rgba(16, 185, 129, 0.4);
-    }
-
-    .status-error {
-      background: rgba(239, 68, 68, 0.2);
-      border: 1px solid rgba(239, 68, 68, 0.4);
-    }
-
-    .status-warning {
-      background: rgba(245, 158, 11, 0.2);
-      border: 1px solid rgba(245, 158, 11, 0.4);
     }
 
     .spinner {
@@ -190,6 +193,127 @@
 
     @keyframes spin {
       to { transform: rotate(360deg); }
+    }
+
+    .slider-group {
+      margin-bottom: 15px;
+    }
+
+    .slider-group label {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 5px;
+      font-size: 0.9rem;
+    }
+
+    .slider-group input[type="range"] {
+      width: 100%;
+    }
+
+    .section-divider {
+      margin: 25px 0 15px 0;
+      padding-top: 20px;
+    }
+
+    .section-divider h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+
+    .checkbox-group {
+      margin: 20px 0;
+    }
+
+    .checkbox-group label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .stats-bar {
+      display: flex;
+      gap: 20px;
+      padding: 15px 0;
+      margin-top: 15px;
+      font-size: 0.95rem;
+    }
+
+    .stats-bar span {
+      font-family: 'Courier New', monospace;
+    }
+
+    .code-section {
+      margin-top: 20px;
+      padding-top: 20px;
+    }
+
+    .code-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .code-header h3 {
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .code-block {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 8px;
+      padding: 15px;
+      overflow-x: auto;
+      font-size: 0.85rem;
+      line-height: 1.6;
+    }
+
+    .code-block code {
+      font-family: 'Courier New', 'Consolas', monospace;
+      color: #e0e0e0;
+      white-space: pre;
+    }
+
+    .btn-copy {
+      padding: 6px 12px;
+      font-size: 0.85rem;
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      color: white;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .btn-copy:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-1px);
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: rgba(16, 185, 129, 0.95);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      z-index: 2000;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s ease;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
     }
 
     .info {
@@ -207,44 +331,165 @@
   </style>
 </head>
 <body>
+  <!-- Webcam Overlay (Top-Right Corner) -->
+  <div class="webcam-overlay">
+    <video id="webcam" autoplay playsinline></video>
+  </div>
+
   <div class="container">
-    <h1>🎭 Aniface Demo</h1>
-    <p class="subtitle">Real-time facial tracking with 3D avatar animation</p>
+    <h1>Aniface demo</h1>
 
+    <!-- Main Layout Grid -->
     <div class="demo-grid">
-      <!-- Webcam Panel -->
+      <!-- Left Column: Controls -->
       <div class="panel">
-        <h2>📹 Webcam</h2>
-        <video id="webcam" autoplay playsinline></video>
+        <h2>Blendshape & camera control</h2>
+        
+        <!-- Eye Blink Slider -->
+        <div class="slider-group">
+          <label>
+            <span>Eye Blink</span>
+            <span id="eyeBlink-value">1.2x</span>
+          </label>
+          <input 
+            type="range" 
+            id="eyeBlink-slider"
+            min="0.5" 
+            max="2.0" 
+            step="0.1" 
+            value="1.2"
+          />
+        </div>
+
+        <!-- Jaw Open Slider -->
+        <div class="slider-group">
+          <label>
+            <span>Jaw Open</span>
+            <span id="jawOpen-value">1.0x</span>
+          </label>
+          <input 
+            type="range" 
+            id="jawOpen-slider"
+            min="0.5" 
+            max="2.0" 
+            step="0.1" 
+            value="1.0"
+          />
+        </div>
+
+        <!-- Smile Slider -->
+        <div class="slider-group">
+          <label>
+            <span>Smile</span>
+            <span id="smile-value">1.1x</span>
+          </label>
+          <input 
+            type="range" 
+            id="smile-slider"
+            min="0.5" 
+            max="2.0" 
+            step="0.1" 
+            value="1.1"
+          />
+        </div>
+
+        <!-- Eyebrow Up Slider -->
+        <div class="slider-group">
+          <label>
+            <span>Eyebrow Up</span>
+            <span id="eyebrow-value">1.2x</span>
+          </label>
+          <input 
+            type="range" 
+            id="eyebrow-slider"
+            min="0.5" 
+            max="2.0" 
+            step="0.1" 
+            value="1.2"
+          />
+        </div>
+
+        <!-- FOV Slider -->
+        <div class="slider-group">
+          <label>
+            <span>Field of View</span>
+            <span id="fov-value">60°</span>
+          </label>
+          <input 
+            type="range" 
+            id="fov-slider"
+            min="30" 
+            max="90" 
+            step="5" 
+            value="60"
+          />
+        </div>
+
+        <!-- Enable Controls Checkbox -->
+        <div class="checkbox-group">
+          <label>
+            <input type="checkbox" id="enableControls-checkbox" />
+            <span>Enable camera controls</span>
+          </label>
+        </div>
+
+        <!-- Enable Zoom Checkbox -->
+        <div class="checkbox-group">
+          <label>
+            <input type="checkbox" id="enableZoom-checkbox" checked />
+            <span>Enable zoom</span>
+          </label>
+        </div>
+
+        <!-- Control Buttons -->
+        <div class="button-group">
+          <button id="startBtn" class="btn-primary" disabled>Start</button>
+          <button id="stopBtn" class="btn-secondary" disabled>Stop</button>
+        </div>
+
+        <!-- Status Display -->
+        <div id="status" class="status status-loading">
+          <div class="spinner"></div>
+          <span>Initializing...</span>
+        </div>
+
+        <!-- Code Viewer Section -->
+        <div class="code-section">
+          <div class="code-header">
+            <h3>💻 Code + copy button</h3>
+            <button id="copyBtn" class="btn-copy">📋 Copy</button>
+          </div>
+          <div class="code-block">
+            <code id="config-code">const avatar = new FacialAvatar({
+  videoElement: video,
+  canvasElement: canvas,
+  modelPath: './examples/raccoon_head_small.glb',
+  pixelRatio: 1,
+  fov: 60,
+  enableControls: false,
+  enableZoom: true,
+  blendshapeMultipliers: {
+    eyeBlinkLeft: 1.2,
+    eyeBlinkRight: 1.2,
+    jawOpen: 1.0,
+    mouthSmile: 1.1,
+    browInnerUp: 1.2
+  }
+})</code>
+          </div>
+        </div>
       </div>
 
-      <!-- Avatar Panel -->
+      <!-- Right Column: Avatar -->
       <div class="panel">
-        <h2>🦝 Avatar</h2>
+        <h2>🦝 Animal avatar (800x600 px)</h2>
         <canvas id="avatar"></canvas>
-      </div>
-    </div>
-
-    <!-- Controls Panel -->
-    <div class="controls">
-      <div id="status" class="status status-loading">
-        <div class="spinner"></div>
-        <span>Initializing...</span>
-      </div>
-
-      <div class="button-group">
-        <button id="startBtn" class="btn-primary" disabled>Start Tracking</button>
-        <button id="stopBtn" class="btn-secondary" disabled>Stop</button>
-      </div>
-
-      <div class="info">
-        <strong>Instructions:</strong>
-        <ul style="margin-left: 20px; margin-top: 5px;">
-          <li>Click "Start Tracking" to begin</li>
-          <li>Look at the camera and see your avatar move!</li>
-          <li>Try smiling, blinking, opening your mouth</li>
-          <li>Use mouse to rotate the avatar view</li>
-        </ul>
+        
+        <!-- Stats Bar -->
+        <div class="stats-bar">
+          <span>FPS: <span id="fps-value">--</span></span>
+          <span>Model: <span id="model-name">Raccoon</span></span>
+        </div>
       </div>
     </div>
 
@@ -253,6 +498,9 @@
       <a href="https://threejs.org/" style="color: white;">Three.js</a>
     </div>
   </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast">Code copied!</div>
 
   <script type="module">
     import { FacialAvatar } from './src/index.ts'
@@ -265,6 +513,38 @@
     const startBtn = document.getElementById('startBtn')
     const stopBtn = document.getElementById('stopBtn')
     const statusEl = document.getElementById('status')
+    const copyBtn = document.getElementById('copyBtn')
+    const toast = document.getElementById('toast')
+
+    // Sliders
+    const eyeBlinkSlider = document.getElementById('eyeBlink-slider')
+    const jawOpenSlider = document.getElementById('jawOpen-slider')
+    const smileSlider = document.getElementById('smile-slider')
+    const eyebrowSlider = document.getElementById('eyebrow-slider')
+    const fovSlider = document.getElementById('fov-slider')
+
+    // Value displays
+    const eyeBlinkValue = document.getElementById('eyeBlink-value')
+    const jawOpenValue = document.getElementById('jawOpen-value')
+    const smileValue = document.getElementById('smile-value')
+    const eyebrowValue = document.getElementById('eyebrow-value')
+    const fovValue = document.getElementById('fov-value')
+
+    // Checkboxes
+    const enableControlsCheckbox = document.getElementById('enableControls-checkbox')
+    const enableZoomCheckbox = document.getElementById('enableZoom-checkbox')
+
+    // Stats
+    const fpsValue = document.getElementById('fps-value')
+
+    // Set canvas size immediately to prevent initialization override
+    canvas.width = 800
+    canvas.height = 600
+
+    // TODO: Wire up slider functionality (Task 4)
+    // TODO: Wire up stats display (Task 5)
+    // TODO: Wire up live config code viewer (Task 6)
+    // TODO: Wire up copy button (Task 7)
 
     // Status helper
     function setStatus(message, type = 'loading') {
@@ -323,16 +603,21 @@
           canvasElement: canvas,
           modelPath: './examples/raccoon_head_small.glb',
           
-          // Camera controls
-          enableControls: false,
-          enableZoom: false,
+          // Camera controls (read from UI)
+          fov: parseInt(fovSlider.value),
+          enableControls: enableControlsCheckbox.checked,
+          enableZoom: enableZoomCheckbox.checked,
+          
+          // Force pixel ratio to 1 to prevent high-DPI scaling
+          pixelRatio: 1,
           
           // Blendshape adjustments
           blendshapeMultipliers: {
-            eyeBlinkLeft: 1.2,
-            eyeBlinkRight: 1.2,
-            browInnerUp: 1.2,
-            mouthSmile: 1.1
+            eyeBlinkLeft: parseFloat(eyeBlinkSlider.value),
+            eyeBlinkRight: parseFloat(eyeBlinkSlider.value),
+            jawOpen: parseFloat(jawOpenSlider.value),
+            mouthSmile: parseFloat(smileSlider.value),
+            browInnerUp: parseFloat(eyebrowSlider.value)
           },
           
           // Model positioning (optional)
@@ -354,6 +639,14 @@
           
           onReady: () => {
             console.log('✅ Avatar ready')
+            // Force canvas size to 800x600
+            canvas.width = 800
+            canvas.height = 600
+            canvas.style.width = '800px'
+            canvas.style.height = '600px'
+            if (avatar) {
+              avatar.updateSize(800, 600)
+            }
             setStatus('Ready! Click "Start Tracking" to begin', 'success')
             startBtn.disabled = false
           },
@@ -402,6 +695,10 @@
       stopBtn.disabled = true
     }
 
+    // Set canvas size explicitly BEFORE initialization
+    canvas.width = 800
+    canvas.height = 600
+
     // Event listeners
     startBtn.addEventListener('click', startTracking)
     stopBtn.addEventListener('click', stopTracking)
@@ -409,10 +706,9 @@
     // Handle window resize
     window.addEventListener('resize', () => {
       if (avatar) {
-        const rect = canvas.getBoundingClientRect()
-        canvas.width = rect.width
-        canvas.height = rect.height
-        avatar.updateSize(canvas.width, canvas.height)
+        canvas.width = 800
+        canvas.height = 600
+        avatar.updateSize(800, 600)
       }
     })
 
