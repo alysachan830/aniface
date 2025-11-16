@@ -180,7 +180,7 @@ button:disabled {
 
 .status {
   padding: 12px 0;
-  margin-bottom: 15px;
+  margin-top: 15px;
   font-size: 0.95rem;
   display: flex;
   align-items: center;
