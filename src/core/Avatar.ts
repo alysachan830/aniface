@@ -271,7 +271,7 @@ export class Avatar {
   /**
    * Update blendshape values
    * Uses cached indices for O(1) performance
-   * @param blendshapes - Map of blendshape names to values (0-1)
+   * @param blendshapes - Map of blendshape names to values (typically 0-1, but can exceed 1 for exaggerated effects)
    */
   updateBlendshapes(blendshapes: Map<string, number>): void {
     for (const [name, value] of blendshapes) {
@@ -295,8 +295,14 @@ export class Avatar {
     
     if (!this.gltf) return
     
-    // Apply scale (reuse temp vector to avoid allocation)
+    // Apply facial tracking scale (reuse temp vector to avoid allocation)
     this._tempVector3.set(scale, scale, scale)
+    matrix.scale(this._tempVector3)
+    
+    // IMPORTANT: Also apply the model's initial scale from constructor options
+    // The transformation matrix is rebuilt every frame during facial tracking,
+    // so the model scale must be re-applied or it will be lost
+    this._tempVector3.set(this.options.scale, this.options.scale, this.options.scale)
     matrix.scale(this._tempVector3)
     
     // Fix horizontal mirroring by flipping X-axis (only for full avatar mode)

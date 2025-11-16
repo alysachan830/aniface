@@ -333,19 +333,6 @@ button:disabled {
   padding-top: 20px;
 }
 
-.code-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.code-header h3 {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #ffffff;
-}
-
 .code-block {
   background: #232a31;
   border: 1px solid #2d3238;

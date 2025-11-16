@@ -73,7 +73,7 @@ export function retargetBlendshapes(
   
   for (const blendshape of categories) {
     const multiplier = multipliers[blendshape.categoryName] ?? 1.0
-    const adjustedScore = Math.min(blendshape.score * multiplier, 1.0) // Clamp to 1.0
+    const adjustedScore = blendshape.score * multiplier
     coefsMap.set(blendshape.categoryName, adjustedScore)
   }
   

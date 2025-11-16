@@ -20,6 +20,10 @@ const fovSlider = document.getElementById('fov-slider')
 const scaleSlider = document.getElementById('scale-slider')
 
 // Value displays
+const eyeBlinkValue = document.getElementById('eyeBlink-value')
+const jawOpenValue = document.getElementById('jawOpen-value')
+const smileValue = document.getElementById('smile-value')
+const fovValue = document.getElementById('fov-value')
 const scaleValue = document.getElementById('scale-value')
 
 // Stats
@@ -182,6 +186,8 @@ async function initAvatar() {
   try {
     setStatus('Loading avatar system...', 'loading')
     
+    const scaleValue = parseFloat(scaleSlider.value)
+    
     avatar = new FacialAvatar({
       videoElement: webcam,
       canvasElement: canvas,
@@ -205,7 +211,7 @@ async function initAvatar() {
       
       // Model options (read from UI)
       modelOptions: {
-        scale: parseFloat(scaleSlider.value)
+        scale: scaleValue
       },
       
       onReady: () => {
@@ -302,23 +308,28 @@ toggleBtn.addEventListener('click', toggleTracking)
 
 // Slider event listeners - update avatar in real-time with throttling
 eyeBlinkSlider.addEventListener('input', () => {
+  eyeBlinkValue.textContent = `${parseFloat(eyeBlinkSlider.value).toFixed(1)}x`
   throttledUpdateAvatar()
 })
 
 jawOpenSlider.addEventListener('input', () => {
+  jawOpenValue.textContent = `${parseFloat(jawOpenSlider.value).toFixed(1)}x`
   throttledUpdateAvatar()
 })
 
 smileSlider.addEventListener('input', () => {
+  smileValue.textContent = `${parseFloat(smileSlider.value).toFixed(1)}x`
   throttledUpdateAvatar()
 })
 
 fovSlider.addEventListener('input', () => {
+  fovValue.textContent = `${parseInt(fovSlider.value)}°`
   throttledUpdateAvatar()
 })
 
 scaleSlider.addEventListener('input', () => {
-  scaleValue.textContent = `${parseFloat(scaleSlider.value).toFixed(1)}x`
+  const newScale = parseFloat(scaleSlider.value)
+  scaleValue.textContent = `${newScale.toFixed(1)}x`
   throttledUpdateAvatar()
 })
 
