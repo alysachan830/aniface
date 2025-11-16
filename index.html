@@ -224,8 +224,8 @@
     #eyeBlink-value,
     #jawOpen-value,
     #smile-value,
-    #eyebrow-value,
-    #fov-value {
+    #fov-value,
+    #scale-value {
       color: #2eefdc;
       font-weight: 600;
     }
@@ -438,7 +438,7 @@
     <div class="demo-grid">
       <!-- Left Column: Controls -->
       <div class="panel">
-        <h2>Blendshape & camera control</h2>
+        <h2>Controls</h2>
         
         <!-- Eye Blink Slider -->
         <div class="slider-group">
@@ -488,22 +488,6 @@
           />
         </div>
 
-        <!-- Eyebrow Up Slider -->
-        <div class="slider-group">
-          <label>
-            <span>Eyebrow Up</span>
-            <span id="eyebrow-value">1.2x</span>
-          </label>
-          <input 
-            type="range" 
-            id="eyebrow-slider"
-            min="0.5" 
-            max="2.0" 
-            step="0.1" 
-            value="1.2"
-          />
-        </div>
-
         <!-- FOV Slider -->
         <div class="slider-group">
           <label>
@@ -520,20 +504,20 @@
           />
         </div>
 
-        <!-- Enable Controls Checkbox -->
-        <div class="checkbox-group">
+        <!-- Scale Slider -->
+        <div class="slider-group">
           <label>
-            <input type="checkbox" id="enableControls-checkbox" />
-            <span>Enable camera controls</span>
+            <span>Scale</span>
+            <span id="scale-value">1.0x</span>
           </label>
-        </div>
-
-        <!-- Enable Zoom Checkbox -->
-        <div class="checkbox-group">
-          <label>
-            <input type="checkbox" id="enableZoom-checkbox" checked />
-            <span>Enable zoom</span>
-          </label>
+          <input 
+            type="range" 
+            id="scale-slider"
+            min="0.5" 
+            max="3.0" 
+            step="0.1" 
+            value="1.0"
+          />
         </div>
 
         <!-- Control Buttons -->
@@ -559,16 +543,15 @@
   videoElement: video,
   canvasElement: canvas,
   modelPath: './examples/raccoon_head_small.glb',
-  pixelRatio: 1,
   fov: 60,
-  enableControls: false,
-  enableZoom: true,
   blendshapeMultipliers: {
     eyeBlinkLeft: 1.2,
     eyeBlinkRight: 1.2,
     jawOpen: 1.0,
-    mouthSmile: 1.1,
-    browInnerUp: 1.2
+    mouthSmile: 1.1
+  },
+  modelOptions: {
+    scale: 1.0
   }
 })</code>
           </div>
@@ -615,19 +598,11 @@
     const eyeBlinkSlider = document.getElementById('eyeBlink-slider')
     const jawOpenSlider = document.getElementById('jawOpen-slider')
     const smileSlider = document.getElementById('smile-slider')
-    const eyebrowSlider = document.getElementById('eyebrow-slider')
     const fovSlider = document.getElementById('fov-slider')
+    const scaleSlider = document.getElementById('scale-slider')
 
     // Value displays
-    const eyeBlinkValue = document.getElementById('eyeBlink-value')
-    const jawOpenValue = document.getElementById('jawOpen-value')
-    const smileValue = document.getElementById('smile-value')
-    const eyebrowValue = document.getElementById('eyebrow-value')
-    const fovValue = document.getElementById('fov-value')
-
-    // Checkboxes
-    const enableControlsCheckbox = document.getElementById('enableControls-checkbox')
-    const enableZoomCheckbox = document.getElementById('enableZoom-checkbox')
+    const scaleValue = document.getElementById('scale-value')
 
     // Stats
     const fpsValue = document.getElementById('fps-value')
@@ -700,8 +675,8 @@
           
           // Camera controls (read from UI)
           fov: parseInt(fovSlider.value),
-          enableControls: enableControlsCheckbox.checked,
-          enableZoom: enableZoomCheckbox.checked,
+          enableControls: false,
+          enableZoom: true,
           
           // Force pixel ratio to 1 to prevent high-DPI scaling
           pixelRatio: 1,
@@ -711,17 +686,13 @@
             eyeBlinkLeft: parseFloat(eyeBlinkSlider.value),
             eyeBlinkRight: parseFloat(eyeBlinkSlider.value),
             jawOpen: parseFloat(jawOpenSlider.value),
-            mouthSmile: parseFloat(smileSlider.value),
-            browInnerUp: parseFloat(eyebrowSlider.value)
+            mouthSmile: parseFloat(smileSlider.value)
           },
           
-          // Model positioning (optional)
-          // modelOptions: {
-          //   center: true,           // Center model at origin
-          //   autoRotate: true,       // Rotate 180° to face forward
-          //   rotation: Math.PI,      // Custom rotation in radians
-          //   scale: 1                // Scale factor
-          // },
+          // Model options (read from UI)
+          modelOptions: {
+            scale: parseFloat(scaleSlider.value)
+          },
           
           // Landmark detection settings (optional)
           // landmarkConfig: {
@@ -797,6 +768,11 @@
     // Event listeners
     startBtn.addEventListener('click', startTracking)
     stopBtn.addEventListener('click', stopTracking)
+
+    // Slider event listeners - update value displays
+    scaleSlider.addEventListener('input', (e) => {
+      scaleValue.textContent = `${parseFloat(e.target.value).toFixed(1)}x`
+    })
 
     // Handle window resize
     window.addEventListener('resize', () => {
