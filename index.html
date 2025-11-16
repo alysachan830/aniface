@@ -18,87 +18,91 @@
     <div class="demo-grid">
       <!-- Left Column: Controls -->
       <div class="panel">
-        <h2>Blendshapes</h2>
-        
-        <!-- Eye Blink Slider -->
-        <div class="slider-group">
-          <label>
-            <span>Eye Blink</span>
-            <span id="eyeBlink-value">1.2x</span>
-          </label>
-          <input 
-            type="range" 
-            id="eyeBlink-slider"
-            min="0.5" 
-            max="2.0" 
-            step="0.1" 
-            value="1.2"
-          />
-        </div>
+          <div class="blendshapes-sliders">
+              <h3>Blendshapes</h3>
 
-        <!-- Jaw Open Slider -->
-        <div class="slider-group">
-          <label>
-            <span>Jaw Open</span>
-            <span id="jawOpen-value">1.0x</span>
-          </label>
-          <input 
-            type="range" 
-            id="jawOpen-slider"
-            min="0.5" 
-            max="2.0" 
-            step="0.1" 
-            value="1.0"
-          />
-        </div>
+              <!-- Eye Blink Slider -->
+              <div class="slider-group">
+                  <label>
+                      <span>Eye Blink</span>
+                      <span id="eyeBlink-value">1.2x</span>
+                  </label>
+                  <input
+                          type="range"
+                          id="eyeBlink-slider"
+                          min="0.5"
+                          max="2.0"
+                          step="0.1"
+                          value="1.2"
+                  />
+              </div>
 
-        <!-- Smile Slider -->
-        <div class="slider-group">
-          <label>
-            <span>Smile</span>
-            <span id="smile-value">1.1x</span>
-          </label>
-          <input 
-            type="range" 
-            id="smile-slider"
-            min="0.5" 
-            max="2.0" 
-            step="0.1" 
-            value="1.1"
-          />
-        </div>
+              <!-- Jaw Open Slider -->
+              <div class="slider-group">
+                  <label>
+                      <span>Jaw Open</span>
+                      <span id="jawOpen-value">1.0x</span>
+                  </label>
+                  <input
+                          type="range"
+                          id="jawOpen-slider"
+                          min="0.5"
+                          max="2.0"
+                          step="0.1"
+                          value="1.0"
+                  />
+              </div>
 
-        <!-- FOV Slider -->
-        <div class="slider-group">
-          <label>
-            <span>Field of View</span>
-            <span id="fov-value">60°</span>
-          </label>
-          <input 
-            type="range" 
-            id="fov-slider"
-            min="30" 
-            max="90" 
-            step="5" 
-            value="60"
-          />
-        </div>
+              <!-- Smile Slider -->
+              <div class="slider-group">
+                  <label>
+                      <span>Smile</span>
+                      <span id="smile-value">1.1x</span>
+                  </label>
+                  <input
+                          type="range"
+                          id="smile-slider"
+                          min="0.5"
+                          max="2.0"
+                          step="0.1"
+                          value="1.1"
+                  />
+              </div>
+          </div>
+          <div>
+              <h3>Other Options</h3>
+              <!-- FOV Slider -->
+              <div class="slider-group">
+                  <label>
+                      <span>FOV (Field of View)</span>
+                      <span id="fov-value">60°</span>
+                  </label>
+                  <input
+                          type="range"
+                          id="fov-slider"
+                          min="30"
+                          max="90"
+                          step="5"
+                          value="60"
+                  />
+              </div>
 
-        <!-- Scale Slider -->
-        <div class="slider-group">
-          <label>
-            <span>Scale</span>
-            <span id="scale-value">1.0x</span>
-          </label>
-          <input 
-            type="range" 
-            id="scale-slider"
-            min="0.5" 
-            max="3.0" 
-            step="0.1" 
-            value="1.0"
-          />
-        </div>
+              <!-- Scale Slider -->
+              <div class="slider-group">
+                  <label>
+                      <span>Scale</span>
+                      <span id="scale-value">1.0x</span>
+                  </label>
+                  <input
+                          type="range"
+                          id="scale-slider"
+                          min="0.5"
+                          max="3.0"
+                          step="0.1"
+                          value="1.0"
+                  />
+              </div>
+          </div>
 
         <!-- Code Viewer Section -->
         <div class="code-section">

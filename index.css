@@ -79,13 +79,16 @@ h1 {
   padding: 0;
 }
 
-.panel h2 {
-  font-size: 1.3rem;
-  margin-bottom: 15px;
-  display: flex;
+.panel h3 {
+  font-size: 1rem;
+  margin-bottom: 16px;
   align-items: center;
-  gap: 8px;
-  color: #ffffff;
+  color: #aaaaaa;
+    font-weight: 400;
+}
+
+.blendshapes-sliders {
+    margin-bottom: 40px;
 }
 
 #avatar {
@@ -123,7 +126,7 @@ h1 {
 .button-group {
   display: flex;
   gap: 10px;
-  margin-bottom: 15px;
+  margin-bottom: 16px;
 }
 
 button {
@@ -180,7 +183,7 @@ button:disabled {
 
 .status {
   padding: 12px 0;
-  margin-top: 15px;
+  margin-top: 16px;
   font-size: 0.95rem;
   display: flex;
   align-items: center;
@@ -202,7 +205,7 @@ button:disabled {
 }
 
 .slider-group {
-  margin-bottom: 15px;
+  margin-bottom: 16px;
 }
 
 .slider-group label {
@@ -270,14 +273,14 @@ button:disabled {
 }
 
 .section-divider {
-  margin: 25px 0 15px 0;
+  margin: 25px 0 16px 0;
   padding-top: 20px;
 }
 
 .section-divider h3 {
   font-size: 1rem;
   font-weight: 600;
-  margin-bottom: 15px;
+  margin-bottom: 16px;
   color: #ffffff;
 }
 
@@ -304,8 +307,8 @@ button:disabled {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 0;
-  margin-top: 15px;
+  padding: 16px 0;
+  margin-top: 16px;
   font-size: 0.95rem;
 }
 
@@ -337,7 +340,7 @@ button:disabled {
   background: #232a31;
   border: 1px solid #2d3238;
   border-radius: 8px;
-  padding: 15px;
+  padding: 16px;
   overflow-x: auto;
   font-size: 0.85rem;
   line-height: 1.6;
