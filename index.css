@@ -302,10 +302,16 @@ button:disabled {
 
 .stats-bar {
   display: flex;
-  gap: 20px;
+  justify-content: space-between;
+  align-items: center;
   padding: 15px 0;
   margin-top: 15px;
   font-size: 0.95rem;
+}
+
+.stats-info {
+  display: flex;
+  gap: 20px;
 }
 
 .stats-bar span {
@@ -316,6 +322,10 @@ button:disabled {
 .stats-bar span span {
   color: #2eefdc;
   font-weight: 600;
+}
+
+.stats-bar button {
+  flex: 0 0 auto;
 }
 
 .code-section {
@@ -337,13 +347,32 @@ button:disabled {
 }
 
 .code-block {
-  background: #0d0f11;
+  background: #232a31;
   border: 1px solid #2d3238;
   border-radius: 8px;
   padding: 15px;
   overflow-x: auto;
   font-size: 0.85rem;
   line-height: 1.6;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.code-block.shine {
+  animation: shineEffect 0.6s ease-out;
+}
+
+@keyframes shineEffect {
+  0% {
+    border-color: #2d3238;
+  }
+  50% {
+    border-color: #2eefdc;
+  }
+  100% {
+    border-color: #2d3238;
+  }
 }
 
 .code-block code {

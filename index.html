@@ -100,12 +100,6 @@
           />
         </div>
 
-        <!-- Control Buttons -->
-        <div class="button-group">
-          <button id="startBtn" class="btn-primary" disabled>Start</button>
-          <button id="stopBtn" class="btn-secondary" disabled>Stop</button>
-        </div>
-
         <!-- Code Viewer Section -->
         <div class="code-section">
           <div class="code-header">
@@ -138,8 +132,11 @@
         
         <!-- Stats Bar -->
         <div class="stats-bar">
-          <span>FPS: <span id="fps-value">--</span></span>
-          <span>Model: <span id="model-name">Raccoon</span></span>
+          <div class="stats-info">
+            <span>FPS: <span id="fps-value">--</span></span>
+            <span>Model: <span id="model-name">Raccoon</span></span>
+          </div>
+          <button id="toggleBtn" class="btn-secondary" disabled>Stop</button>
         </div>
 
         <!-- Status Display -->

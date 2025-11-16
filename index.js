@@ -7,8 +7,7 @@ let frameCount = 0
 
 const webcam = document.getElementById('webcam')
 const canvas = document.getElementById('avatar')
-const startBtn = document.getElementById('startBtn')
-const stopBtn = document.getElementById('stopBtn')
+const toggleBtn = document.getElementById('toggleBtn')
 const statusEl = document.getElementById('status')
 const copyBtn = document.getElementById('copyBtn')
 const toast = document.getElementById('toast')
@@ -110,36 +109,36 @@ function updateConfigCode() {
 })`
 
   document.getElementById('config-code').innerHTML = code
+  
+  // Trigger shine effect
+  const codeBlock = document.querySelector('.code-block')
+  codeBlock.classList.remove('shine')
+  // Force reflow to restart animation
+  void codeBlock.offsetWidth
+  codeBlock.classList.add('shine')
+  
+  // Remove shine class after animation completes
+  setTimeout(() => {
+    codeBlock.classList.remove('shine')
+  }, 600)
 }
 
 // Update avatar configuration in real-time
 async function updateAvatarConfig() {
   if (!avatar) return
   
-  // Remember if we were tracking
-  const wasTracking = isCurrentlyTracking
-  
   // Show updating status
   setStatus('Updating configuration...', 'loading')
   
   // Stop and destroy current avatar
-  if (wasTracking) {
+  if (isCurrentlyTracking) {
     avatar.stop()
   }
   avatar.destroy()
   avatar = null
   
-  // Reinitialize with new config
+  // Reinitialize with new config (will auto-start tracking in onReady callback)
   await initAvatar()
-  
-  // Restart if we were tracking before
-  if (wasTracking && avatar) {
-    avatar.start()
-    isCurrentlyTracking = true
-    setStatus('Tracking active - Move your face!', 'success')
-  } else if (avatar) {
-    setStatus('Ready! Click "Start" to begin', 'success')
-  }
   
   // Update code viewer
   updateConfigCode()
@@ -218,9 +217,17 @@ async function initAvatar() {
         canvas.style.height = '600px'
         if (avatar) {
           avatar.updateSize(800, 600)
+          
+          // Start tracking automatically
+          avatar.start()
+          isCurrentlyTracking = true
+          setStatus('Tracking active - Move your face!', 'success')
+          
+          // Update button state
+          toggleBtn.textContent = 'Stop'
+          toggleBtn.className = 'btn-secondary'
+          toggleBtn.disabled = false
         }
-        setStatus('Ready! Click "Start" to begin', 'success')
-        startBtn.disabled = false
       },
       
       onError: (error) => {
@@ -256,33 +263,34 @@ async function initAvatar() {
   }
 }
 
-// Start tracking
-function startTracking() {
+// Toggle tracking on/off
+function toggleTracking() {
   if (!avatar) return
   
-  avatar.start()
-  isCurrentlyTracking = true
-  setStatus('Tracking active - Move your face!', 'success')
-  
-  startBtn.disabled = true
-  stopBtn.disabled = false
-}
-
-// Stop tracking
-function stopTracking() {
-  if (!avatar) return
-  
-  avatar.stop()
-  isCurrentlyTracking = false
-  setStatus('Tracking paused', 'warning')
-  
-  // Reset FPS display
-  fpsValue.textContent = '--'
-  frameCount = 0
-  lastFrameTime = Date.now()
-  
-  startBtn.disabled = false
-  stopBtn.disabled = true
+  if (isCurrentlyTracking) {
+    // Stop tracking
+    avatar.stop()
+    isCurrentlyTracking = false
+    setStatus('Tracking paused', 'warning')
+    
+    // Reset FPS display
+    fpsValue.textContent = '--'
+    frameCount = 0
+    lastFrameTime = Date.now()
+    
+    // Update button to "Start"
+    toggleBtn.textContent = 'Start'
+    toggleBtn.className = 'btn-primary'
+  } else {
+    // Start tracking
+    avatar.start()
+    isCurrentlyTracking = true
+    setStatus('Tracking active - Move your face!', 'success')
+    
+    // Update button to "Stop"
+    toggleBtn.textContent = 'Stop'
+    toggleBtn.className = 'btn-secondary'
+  }
 }
 
 // Set canvas size explicitly BEFORE initialization
@@ -290,8 +298,7 @@ canvas.width = 800
 canvas.height = 600
 
 // Event listeners
-startBtn.addEventListener('click', startTracking)
-stopBtn.addEventListener('click', stopTracking)
+toggleBtn.addEventListener('click', toggleTracking)
 
 // Slider event listeners - update avatar in real-time with throttling
 eyeBlinkSlider.addEventListener('input', () => {
