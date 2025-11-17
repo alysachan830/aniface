@@ -137,9 +137,9 @@
           </div>
           <div class="code-block">
             <code id="config-code">const avatar = new FacialAvatar({
-  videoElement: video,
-  canvasElement: canvas,
-  modelPath: './examples/raccoon_head_small.glb',
+  // videoElement: Your HTML video element,
+  // canvasElement: Your canvas HTML canvas element,
+  // modelPath: Your 3D model GLTF file path,
   fov: 60,
   blendshapeMultipliers: {
     eyeBlinkLeft: 1.2,
@@ -165,7 +165,12 @@
             <span>FPS: <span id="fps-value">--</span></span>
             <span>Model: <span id="model-name">Raccoon</span></span>
           </div>
-          <button id="toggleBtn" class="btn-secondary" disabled>Stop</button>
+          <button id="toggleBtn" class="btn-secondary" disabled>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="6" y="6" width="12" height="12"></rect>
+            </svg>
+            Stop tracking
+          </button>
         </div>
 
         <!-- Status Display -->

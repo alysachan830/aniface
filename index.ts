@@ -50,6 +50,15 @@ let isCurrentlyTracking = false
 // Track timeout for "Updated" status
 let codeTitleTimeout: NodeJS.Timeout | null = null
 
+// SVG icons for button states
+const stopIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <rect x="6" y="6" width="12" height="12"></rect>
+</svg>`
+
+const startIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <polygon points="5 3 19 12 5 21 5 3"></polygon>
+</svg>`
+
 // Set canvas size immediately to prevent initialization override
 canvas.width = 800
 canvas.height = 600
@@ -140,9 +149,9 @@ function updateConfigCode() {
   }
 
   const code = `const avatar = new FacialAvatar({
-  videoElement: video,
-  canvasElement: canvas,
-  modelPath: './examples/raccoon_head_small.glb',
+  // videoElement: Your HTML video element,
+  // canvasElement: Your canvas HTML canvas element,
+  // modelPath: Your 3D model GLTF file path,
   fov: ${highlight(currentFov, ORIGINAL_CONFIG.fov)},
 ${optionalProps}  blendshapeMultipliers: {
     eyeBlinkLeft: ${highlight(currentEyeBlink, ORIGINAL_CONFIG.eyeBlink)},
@@ -265,7 +274,7 @@ async function initAvatar() {
           setStatus('Tracking active - Move your face!', 'success')
           
           // Update button state
-          toggleBtn.textContent = 'Stop'
+          toggleBtn.innerHTML = `${stopIcon}Stop tracking`
           toggleBtn.className = 'btn-secondary'
           toggleBtn.disabled = false
           
@@ -322,8 +331,8 @@ function toggleTracking() {
     frameCount = 0
     lastFrameTime = Date.now()
     
-    // Update button to "Start"
-    toggleBtn.textContent = 'Start'
+    // Update button to "Start tracking"
+    toggleBtn.innerHTML = `${startIcon}Start tracking`
     toggleBtn.className = 'btn-primary'
   } else {
     // Start tracking
@@ -331,8 +340,8 @@ function toggleTracking() {
     isCurrentlyTracking = true
     setStatus('Tracking active - Move your face!', 'success')
     
-    // Update button to "Stop"
-    toggleBtn.textContent = 'Stop'
+    // Update button to "Stop tracking"
+    toggleBtn.innerHTML = `${stopIcon}Stop tracking`
     toggleBtn.className = 'btn-secondary'
   }
 }
