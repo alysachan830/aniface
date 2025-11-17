@@ -349,22 +349,6 @@ button:disabled {
   transition: all 0.3s ease;
 }
 
-.code-block.shine {
-  animation: shineEffect 0.6s ease-out;
-}
-
-@keyframes shineEffect {
-  0% {
-    border-color: #2d3238;
-  }
-  50% {
-    border-color: #2eefdc;
-  }
-  100% {
-    border-color: #2d3238;
-  }
-}
-
 .code-block code {
   font-family: 'Courier New', 'Consolas', monospace;
   color: #a8b3cf;

@@ -118,18 +118,6 @@ function updateConfigCode() {
 })`
 
   document.getElementById('config-code')!.innerHTML = code
-  
-  // Trigger shine effect
-  const codeBlock = document.querySelector('.code-block') as HTMLElement
-  codeBlock.classList.remove('shine')
-  // Force reflow to restart animation
-  void codeBlock.offsetWidth
-  codeBlock.classList.add('shine')
-  
-  // Remove shine class after animation completes
-  setTimeout(() => {
-    codeBlock.classList.remove('shine')
-  }, 600)
 }
 
 // Update avatar configuration in real-time
