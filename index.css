@@ -352,6 +352,23 @@ button:disabled {
 
 .code-header h3 {
   margin-bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: opacity 0.2s ease;
+}
+
+#code-title-updated {
+  color: #fafafa;
+}
+
+.code-title-visible {
+  opacity: 1;
+}
+
+.code-title-hidden {
+  opacity: 0;
+  position: absolute;
 }
 
 .code-block {

@@ -11,6 +11,8 @@ const toggleBtn = document.getElementById('toggleBtn') as HTMLButtonElement
 const statusEl = document.getElementById('status') as HTMLDivElement
 const copyBtn = document.getElementById('copyBtn') as HTMLButtonElement
 const toast = document.getElementById('toast') as HTMLDivElement
+const codeTitleTry = document.getElementById('code-title-try') as HTMLHeadingElement
+const codeTitleUpdated = document.getElementById('code-title-updated') as HTMLHeadingElement
 
 // Sliders
 const eyeBlinkSlider = document.getElementById('eyeBlink-slider') as HTMLInputElement
@@ -44,6 +46,9 @@ const ORIGINAL_CONFIG = {
 
 // Track if avatar is currently tracking
 let isCurrentlyTracking = false
+
+// Track timeout for "Updated" status
+let codeTitleTimeout: NodeJS.Timeout | null = null
 
 // Set canvas size immediately to prevent initialization override
 canvas.width = 800
@@ -85,6 +90,29 @@ function throttle(func: (...args: any[]) => void, delay: number) {
       }, delay - timeSinceLastExec)
     }
   }
+}
+
+// Show "Updated" status and revert back to "Try now" after 2 seconds
+function showUpdatedStatus() {
+  // Clear any existing timeout
+  if (codeTitleTimeout) {
+    clearTimeout(codeTitleTimeout)
+  }
+  
+  // Hide "Try now", show "Updated"
+  codeTitleTry.classList.remove('code-title-visible')
+  codeTitleTry.classList.add('code-title-hidden')
+  codeTitleUpdated.classList.remove('code-title-hidden')
+  codeTitleUpdated.classList.add('code-title-visible')
+  
+  // Revert back after 2 seconds
+  codeTitleTimeout = setTimeout(() => {
+    codeTitleTry.classList.remove('code-title-hidden')
+    codeTitleTry.classList.add('code-title-visible')
+    codeTitleUpdated.classList.remove('code-title-visible')
+    codeTitleUpdated.classList.add('code-title-hidden')
+    codeTitleTimeout = null
+  }, 2000)
 }
 
 // Update code viewer with current config values and highlight changes
@@ -129,6 +157,9 @@ ${optionalProps}  blendshapeMultipliers: {
 })`
 
   document.getElementById('config-code')!.innerHTML = code
+  
+  // Show "Updated" status
+  showUpdatedStatus()
 }
 
 // Update avatar configuration in real-time
