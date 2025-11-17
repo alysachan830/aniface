@@ -49,9 +49,6 @@ export interface AvatarRendererConfig {
   /** Camera field of view in degrees (default: 60) */
   fov?: number
   
-  /** Pixel ratio for rendering (default: window.devicePixelRatio). Set to 1 for better performance on lower-end devices. */
-  pixelRatio?: number
-  
   /** Camera configuration (optional, defaults: near=0.01, far=2000) */
   cameraConfig?: Partial<CameraConfig>
   
@@ -81,8 +78,6 @@ interface AvatarRendererInternalConfig extends Required<Omit<AvatarRendererConfi
  * const renderer = new AvatarRenderer({
  *   canvas: document.getElementById('avatar'),
  *   modelPath: '/models/avatar.glb',
- *   // Optional: customize pixel ratio for quality/performance balance
- *   pixelRatio: window.devicePixelRatio, // Default, or set to 1 for better performance
  *   // Optional: customize camera
  *   cameraConfig: {
  *     near: 0.01,
@@ -122,7 +117,6 @@ export class AvatarRenderer {
       enableControls: config.enableControls ?? true,
       enableZoom: config.enableZoom ?? false,
       fov: config.fov ?? 60,
-      pixelRatio: config.pixelRatio ?? window.devicePixelRatio,
       cameraConfig: {
         near: config.cameraConfig?.near ?? 0.01,
         far: config.cameraConfig?.far ?? 2000
@@ -167,7 +161,7 @@ export class AvatarRenderer {
       alpha: true,
       antialias: true
     })
-    this.renderer.setPixelRatio(this.config.pixelRatio)
+    this.renderer.setPixelRatio(window.devicePixelRatio)
     this.renderer.setSize(this.config.canvas.width || 320, this.config.canvas.height || 240)
     this.renderer.outputColorSpace = THREE.SRGBColorSpace
     
@@ -243,7 +237,7 @@ export class AvatarRenderer {
     
     this.camera.aspect = width / height || 1
     this.camera.updateProjectionMatrix()
-    this.renderer.setPixelRatio(this.config.pixelRatio)
+    this.renderer.setPixelRatio(window.devicePixelRatio)
     this.renderer.setSize(width || 320, height || 240)
   }
 

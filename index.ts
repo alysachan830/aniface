@@ -1,37 +1,37 @@
-import { FacialAvatar } from './src/index.ts'
+import { FacialAvatar } from './src'
 
-let avatar = null
-let webcamStream = null
+let avatar: FacialAvatar | null = null
+let webcamStream: MediaStream | null = null
 let lastFrameTime = Date.now()
 let frameCount = 0
 
-const webcam = document.getElementById('webcam')
-const canvas = document.getElementById('avatar')
-const toggleBtn = document.getElementById('toggleBtn')
-const statusEl = document.getElementById('status')
-const copyBtn = document.getElementById('copyBtn')
-const toast = document.getElementById('toast')
+const webcam = document.getElementById('webcam') as HTMLVideoElement
+const canvas = document.getElementById('avatar') as HTMLCanvasElement
+const toggleBtn = document.getElementById('toggleBtn') as HTMLButtonElement
+const statusEl = document.getElementById('status') as HTMLDivElement
+const copyBtn = document.getElementById('copyBtn') as HTMLButtonElement
+const toast = document.getElementById('toast') as HTMLDivElement
 
 // Sliders
-const eyeBlinkSlider = document.getElementById('eyeBlink-slider')
-const jawOpenSlider = document.getElementById('jawOpen-slider')
-const smileSlider = document.getElementById('smile-slider')
-const fovSlider = document.getElementById('fov-slider')
-const scaleSlider = document.getElementById('scale-slider')
+const eyeBlinkSlider = document.getElementById('eyeBlink-slider') as HTMLInputElement
+const jawOpenSlider = document.getElementById('jawOpen-slider') as HTMLInputElement
+const smileSlider = document.getElementById('smile-slider') as HTMLInputElement
+const fovSlider = document.getElementById('fov-slider') as HTMLInputElement
+const scaleSlider = document.getElementById('scale-slider') as HTMLInputElement
 
 // Checkboxes
-const enableControlsCheckbox = document.getElementById('enable-controls-checkbox')
-const enableZoomCheckbox = document.getElementById('enable-zoom-checkbox')
+const enableControlsCheckbox = document.getElementById('enable-controls-checkbox') as HTMLInputElement
+const enableZoomCheckbox = document.getElementById('enable-zoom-checkbox') as HTMLInputElement
 
 // Value displays
-const eyeBlinkValue = document.getElementById('eyeBlink-value')
-const jawOpenValue = document.getElementById('jawOpen-value')
-const smileValue = document.getElementById('smile-value')
-const fovValue = document.getElementById('fov-value')
-const scaleValue = document.getElementById('scale-value')
+const eyeBlinkValue = document.getElementById('eyeBlink-value') as HTMLSpanElement
+const jawOpenValue = document.getElementById('jawOpen-value') as HTMLSpanElement
+const smileValue = document.getElementById('smile-value') as HTMLSpanElement
+const fovValue = document.getElementById('fov-value') as HTMLSpanElement
+const scaleValue = document.getElementById('scale-value') as HTMLSpanElement
 
 // Stats
-const fpsValue = document.getElementById('fps-value')
+const fpsValue = document.getElementById('fps-value') as HTMLSpanElement
 
 // Original config for comparison (never changes)
 const ORIGINAL_CONFIG = {
@@ -50,7 +50,7 @@ canvas.width = 800
 canvas.height = 600
 
 // Status helper
-function setStatus(message, type = 'loading') {
+function setStatus(message: string, type: 'loading' | 'success' | 'error' | 'warning' = 'loading') {
   statusEl.className = `status status-${type}`
   
   if (type === 'loading') {
@@ -66,11 +66,11 @@ function setStatus(message, type = 'loading') {
 }
 
 // Throttle utility - limits function calls to once per 500ms
-function throttle(func, delay) {
-  let timeoutId = null
+function throttle(func: (...args: any[]) => void, delay: number) {
+  let timeoutId: NodeJS.Timeout | null = null
   let lastExecTime = 0
   
-  return function(...args) {
+  return function(this: any, ...args: any[]) {
     const currentTime = Date.now()
     const timeSinceLastExec = currentTime - lastExecTime
     
@@ -78,7 +78,7 @@ function throttle(func, delay) {
       func.apply(this, args)
       lastExecTime = currentTime
     } else {
-      clearTimeout(timeoutId)
+      if (timeoutId) clearTimeout(timeoutId)
       timeoutId = setTimeout(() => {
         func.apply(this, args)
         lastExecTime = Date.now()
@@ -96,7 +96,7 @@ function updateConfigCode() {
   const currentScale = parseFloat(scaleSlider.value)
 
   // Highlight if different from ORIGINAL config
-  const highlight = (value, originalValue) => {
+  const highlight = (value: number, originalValue: number) => {
     return value !== originalValue ? `<span class="code-highlight">${value}</span>` : value
   }
 
@@ -106,20 +106,21 @@ function updateConfigCode() {
   modelPath: './examples/raccoon_head_small.glb',
   fov: ${highlight(currentFov, ORIGINAL_CONFIG.fov)},
   blendshapeMultipliers: {
-    eyeBlinkLeft: ${highlight(currentEyeBlink.toFixed(1), ORIGINAL_CONFIG.eyeBlink)},
-    eyeBlinkRight: ${highlight(currentEyeBlink.toFixed(1), ORIGINAL_CONFIG.eyeBlink)},
-    jawOpen: ${highlight(currentJawOpen.toFixed(1), ORIGINAL_CONFIG.jawOpen)},
-    mouthSmile: ${highlight(currentSmile.toFixed(1), ORIGINAL_CONFIG.smile)}
+    eyeBlinkLeft: ${highlight(currentEyeBlink, ORIGINAL_CONFIG.eyeBlink)},
+    eyeBlinkRight: ${highlight(currentEyeBlink, ORIGINAL_CONFIG.eyeBlink)},
+    jawOpen: ${highlight(currentJawOpen, ORIGINAL_CONFIG.jawOpen)},
+    mouthSmileLeft: ${highlight(currentSmile, ORIGINAL_CONFIG.smile)},
+    mouthSmileRight: ${highlight(currentSmile, ORIGINAL_CONFIG.smile)}
   },
   modelOptions: {
-    scale: ${highlight(currentScale.toFixed(1), ORIGINAL_CONFIG.scale)}
+    scale: ${highlight(currentScale, ORIGINAL_CONFIG.scale)}
   }
 })`
 
-  document.getElementById('config-code').innerHTML = code
+  document.getElementById('config-code')!.innerHTML = code
   
   // Trigger shine effect
-  const codeBlock = document.querySelector('.code-block')
+  const codeBlock = document.querySelector('.code-block') as HTMLElement
   codeBlock.classList.remove('shine')
   // Force reflow to restart animation
   void codeBlock.offsetWidth
@@ -156,7 +157,7 @@ async function updateAvatarConfig() {
 const throttledUpdateAvatar = throttle(updateAvatarConfig, 500)
 
 // Initialize webcam
-async function initWebcam() {
+async function initWebcam(): Promise<boolean> {
   try {
     setStatus('Requesting camera access...', 'loading')
     
@@ -172,8 +173,8 @@ async function initWebcam() {
     webcam.srcObject = webcamStream
     
     // Wait for video to be ready
-    await new Promise((resolve) => {
-      webcam.onloadedmetadata = resolve
+    await new Promise<void>((resolve) => {
+      webcam.onloadedmetadata = () => resolve()
     })
     
     console.log('✅ Webcam initialized')
@@ -204,15 +205,13 @@ async function initAvatar() {
       enableControls: controlsEnabled,
       enableZoom: zoomEnabled,
       
-      // Force pixel ratio to 1 to prevent high-DPI scaling
-      pixelRatio: 1,
-      
       // Blendshape adjustments
       blendshapeMultipliers: {
         eyeBlinkLeft: parseFloat(eyeBlinkSlider.value),
         eyeBlinkRight: parseFloat(eyeBlinkSlider.value),
         jawOpen: parseFloat(jawOpenSlider.value),
-        mouthSmile: parseFloat(smileSlider.value)
+        mouthSmileLeft: parseFloat(smileSlider.value),
+        mouthSmileRight: parseFloat(smileSlider.value)
       },
       
       // Model options (read from UI)
@@ -247,7 +246,7 @@ async function initAvatar() {
         setStatus(`Error: ${error.message}`, 'error')
       },
       
-      onLandmarksDetected: (results) => {
+      onLandmarksDetected: () => {
         // Update FPS counter
         frameCount++
         const now = Date.now()
@@ -256,7 +255,7 @@ async function initAvatar() {
         // Update FPS every 500ms
         if (elapsed >= 500) {
           const fps = Math.round((frameCount * 1000) / elapsed)
-          fpsValue.textContent = fps
+          fpsValue.textContent = fps.toString()
           frameCount = 0
           lastFrameTime = now
         }
@@ -271,7 +270,7 @@ async function initAvatar() {
     
   } catch (error) {
     console.error('Failed to initialize avatar:', error)
-    setStatus(`Initialization failed: ${error.message}`, 'error')
+    setStatus(`Initialization failed: ${(error as Error).message}`, 'error')
   }
 }
 
@@ -351,10 +350,10 @@ enableZoomCheckbox.addEventListener('change', () => {
 // Copy button functionality
 copyBtn.addEventListener('click', () => {
   // Get the text content (without HTML tags) for copying
-  const codeElement = document.getElementById('config-code')
+  const codeElement = document.getElementById('config-code')!
   const codeText = codeElement.textContent
   
-  navigator.clipboard.writeText(codeText).then(() => {
+  navigator.clipboard.writeText(codeText!).then(() => {
     // Show toast notification
     toast.classList.add('show')
     setTimeout(() => {
