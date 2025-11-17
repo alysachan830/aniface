@@ -94,10 +94,21 @@ function updateConfigCode() {
   const currentSmile = parseFloat(smileSlider.value)
   const currentFov = parseInt(fovSlider.value)
   const currentScale = parseFloat(scaleSlider.value)
+  const currentEnableControls = enableControlsCheckbox.checked
+  const currentEnableZoom = enableZoomCheckbox.checked
 
   // Highlight if different from ORIGINAL config
   const highlight = (value: number, originalValue: number) => {
     return value !== originalValue ? `<span class="code-highlight">${value}</span>` : value
+  }
+
+  // Build optional properties
+  let optionalProps = ''
+  if (currentEnableControls) {
+    optionalProps += `  enableControls: <span class="code-highlight">true</span>,\n`
+  }
+  if (currentEnableZoom) {
+    optionalProps += `  enableZoom: <span class="code-highlight">true</span>,\n`
   }
 
   const code = `const avatar = new FacialAvatar({
@@ -105,7 +116,7 @@ function updateConfigCode() {
   canvasElement: canvas,
   modelPath: './examples/raccoon_head_small.glb',
   fov: ${highlight(currentFov, ORIGINAL_CONFIG.fov)},
-  blendshapeMultipliers: {
+${optionalProps}  blendshapeMultipliers: {
     eyeBlinkLeft: ${highlight(currentEyeBlink, ORIGINAL_CONFIG.eyeBlink)},
     eyeBlinkRight: ${highlight(currentEyeBlink, ORIGINAL_CONFIG.eyeBlink)},
     jawOpen: ${highlight(currentJawOpen, ORIGINAL_CONFIG.jawOpen)},
@@ -226,6 +237,9 @@ async function initAvatar() {
           toggleBtn.textContent = 'Stop'
           toggleBtn.className = 'btn-secondary'
           toggleBtn.disabled = false
+          
+          // Update code viewer to reflect current config
+          updateConfigCode()
         }
       },
       
