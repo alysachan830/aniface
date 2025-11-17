@@ -69,7 +69,7 @@
                   />
               </div>
           </div>
-          <div>
+          <div class="other-options-sliders">
               <h3>Other Options</h3>
               <!-- FOV Slider -->
               <div class="slider-group">
@@ -102,25 +102,33 @@
                           value="1.0"
                   />
               </div>
-
-              <!-- Checkboxes -->
-              <div class="checkbox-group">
-                  <label>
-                      <input type="checkbox" id="enable-controls-checkbox" />
-                      <span>Enable Camera Controls</span>
-                  </label>
-              </div>
-
-              <div class="checkbox-group">
-                  <label>
-                      <input type="checkbox" id="enable-zoom-checkbox" />
-                      <span>Enable Zoom</span>
-                  </label>
-              </div>
+          </div>
+          <!-- Checkboxes -->
+          <div class="checkbox-group">
+              <label>
+                  <input type="checkbox" id="enable-controls-checkbox" />
+                  <span>Enable Camera Controls</span>
+              </label>
           </div>
 
+          <div class="checkbox-group">
+              <label>
+                  <input type="checkbox" id="enable-zoom-checkbox" />
+                  <span>Enable Zoom</span>
+              </label>
+          </div>
         <!-- Code Viewer Section -->
         <div class="code-section">
+          <div class="code-header">
+            <h3>Try now</h3>
+            <button id="copyBtn" class="btn-copy">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              Copy Code
+            </button>
+          </div>
           <div class="code-block">
             <code id="config-code">const avatar = new FacialAvatar({
   videoElement: video,
@@ -138,7 +146,6 @@
   }
 })</code>
           </div>
-            <button id="copyBtn" class="btn-copy">📋 Copy</button>
         </div>
       </div>
 

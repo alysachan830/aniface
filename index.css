@@ -91,6 +91,10 @@ h1 {
   margin-bottom: 40px;
 }
 
+.other-options-sliders {
+    margin-bottom: 40px;
+}
+
 #avatar {
   width: 800px !important;
   height: 600px !important;
@@ -339,6 +343,17 @@ button:disabled {
   padding-top: 20px;
 }
 
+.code-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.code-header h3 {
+  margin-bottom: 0;
+}
+
 .code-block {
   background: #171717;
   border: 1px solid #27272a;
@@ -364,7 +379,7 @@ button:disabled {
 }
 
 .btn-copy {
-  padding: 8px 16px;
+  padding: 8px 12px;
   font-size: 0.8125rem;
   background: #171717;
   border: 1px solid #27272a;
@@ -373,6 +388,14 @@ button:disabled {
   color: #fafafa;
   font-weight: 500;
   transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto;
+}
+
+.btn-copy svg {
+  flex-shrink: 0;
 }
 
 .btn-copy:hover {
