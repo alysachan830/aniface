@@ -19,6 +19,10 @@ const smileSlider = document.getElementById('smile-slider')
 const fovSlider = document.getElementById('fov-slider')
 const scaleSlider = document.getElementById('scale-slider')
 
+// Checkboxes
+const enableControlsCheckbox = document.getElementById('enable-controls-checkbox')
+const enableZoomCheckbox = document.getElementById('enable-zoom-checkbox')
+
 // Value displays
 const eyeBlinkValue = document.getElementById('eyeBlink-value')
 const jawOpenValue = document.getElementById('jawOpen-value')
@@ -187,6 +191,8 @@ async function initAvatar() {
     setStatus('Loading avatar system...', 'loading')
     
     const scaleValue = parseFloat(scaleSlider.value)
+    const controlsEnabled = enableControlsCheckbox.checked
+    const zoomEnabled = enableZoomCheckbox.checked
     
     avatar = new FacialAvatar({
       videoElement: webcam,
@@ -195,8 +201,8 @@ async function initAvatar() {
       
       // Camera controls (read from UI)
       fov: parseInt(fovSlider.value),
-      enableControls: false,
-      enableZoom: true,
+      enableControls: controlsEnabled,
+      enableZoom: zoomEnabled,
       
       // Force pixel ratio to 1 to prevent high-DPI scaling
       pixelRatio: 1,
@@ -330,6 +336,15 @@ fovSlider.addEventListener('input', () => {
 scaleSlider.addEventListener('input', () => {
   const newScale = parseFloat(scaleSlider.value)
   scaleValue.textContent = `${newScale.toFixed(1)}x`
+  throttledUpdateAvatar()
+})
+
+// Checkbox event listeners
+enableControlsCheckbox.addEventListener('change', () => {
+  throttledUpdateAvatar()
+})
+
+enableZoomCheckbox.addEventListener('change', () => {
   throttledUpdateAvatar()
 })
 

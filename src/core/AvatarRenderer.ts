@@ -198,14 +198,24 @@ export class AvatarRenderer {
     this.scene.add(rimLight)
     
     // Set up camera controls
-    if (this.config.enableControls) {
+    // Create OrbitControls if either controls or zoom is enabled
+    if (this.config.enableControls || this.config.enableZoom) {
       this.controls = new OrbitControls(this.camera, this.renderer.domElement)
       this.controls.enableDamping = true
-      this.controls.dampingFactor = 0.25
+      this.controls.dampingFactor = 0.05  // Smoother damping
       this.controls.enableZoom = this.config.enableZoom
+      this.controls.enableRotate = this.config.enableControls
       this.controls.enablePan = false
-      this.controls.target.set(0, 0, 0)  // Default target, adjusted for body models
+      this.controls.target.set(0, 0, 0)
+      
+      // Set reasonable zoom/rotation limits
+      this.controls.minDistance = 0.5  // Min zoom distance
+      this.controls.maxDistance = 10   // Max zoom distance
+      
       this.controls.update()
+      console.log('✅ OrbitControls enabled - Rotate:', this.config.enableControls, 'Zoom:', this.config.enableZoom)
+    } else {
+      console.log('ℹ️ OrbitControls disabled (both controls and zoom are off)')
     }
     
     console.log('✅ Three.js scene setup complete')
@@ -248,9 +258,10 @@ export class AvatarRenderer {
     this.avatar = new Avatar(this.config.modelPath, this.scene, this.config.modelOptions)
     await this.avatar.initialize()
     
-    // Adjust camera position for body models with head-only animation (Ready Player Me, etc.)
+    // Adjust camera position based on model type
     if (this.avatar.isHeadOnlyMode() && this.camera) {
-      // Body models need camera positioned higher to frame upper body/face area
+      // Body models with head-only animation (Ready Player Me, etc.)
+      // Position camera higher to frame upper body/face area
       this.camera.position.set(0, 0.5, 1.5)
       this.camera.lookAt(0, 0.5, 0)
 
@@ -261,8 +272,18 @@ export class AvatarRenderer {
       }
 
       console.log('📷 Camera adjusted for body model (head-only mode)')
-    } else {
-      console.log('📷 Using default camera position')
+    } else if (this.camera) {
+      // Head-only models (like raccoon) - position camera in front
+      this.camera.position.set(0, 0, 1.5)
+      this.camera.lookAt(0, 0, 0)
+
+      // Update orbit controls target if enabled
+      if (this.controls) {
+        this.controls.target.set(0, 0, 0)
+        this.controls.update()
+      }
+
+      console.log('📷 Using default camera position for head-only model')
     }
   }
 
