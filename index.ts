@@ -11,7 +11,9 @@ const toggleBtn = document.getElementById('toggleBtn') as HTMLButtonElement
 const statusEl = document.getElementById('status') as HTMLDivElement
 const copyBtn = document.getElementById('copyBtn') as HTMLButtonElement
 const toast = document.getElementById('toast') as HTMLDivElement
-const cameraControlsReminder = document.getElementById('camera-controls-reminder') as HTMLDivElement
+const controlReminder = document.getElementById('control-reminder') as HTMLDivElement
+const reminderIcon = controlReminder.querySelector('.reminder-icon') as HTMLDivElement
+const reminderText = controlReminder.querySelector('.reminder-text') as HTMLSpanElement
 const codeTitleTry = document.getElementById('code-title-try') as HTMLHeadingElement
 const codeTitleUpdated = document.getElementById('code-title-updated') as HTMLHeadingElement
 
@@ -51,6 +53,9 @@ let isCurrentlyTracking = false
 // Track timeout for "Updated" status
 let codeTitleTimeout: NodeJS.Timeout | null = null
 
+// Track timeout for reminder fade-out
+let reminderTimeout: NodeJS.Timeout | null = null
+
 // SVG icons for button states
 const stopIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
   <rect x="6" y="6" width="12" height="12"></rect>
@@ -59,6 +64,11 @@ const stopIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" st
 const startIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
   <polygon points="5 3 19 12 5 21 5 3"></polygon>
 </svg>`
+
+// SVG icons for reminders
+const dragIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:1;"><path d="M12 2v20m3-3l-3 3l-3-3M19 9l3 3l-3 3M2 12h20M5 9l-3 3l3 3M9 5l3-3l3 3"/></svg>`
+
+const zoomIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:1;"><path d="m15 15l6 6M15 9l6-6m0 13v5h-5m5-13V3h-5M3 16v5h5m-5 0l6-6M3 8V3h5m1 6L3 3"/></svg>`
 
 // Set canvas size immediately to prevent initialization override
 canvas.width = 800
@@ -125,16 +135,26 @@ function showUpdatedStatus() {
   }, 2000)
 }
 
-// Show camera controls reminder and fade out after 4 seconds
-function showCameraControlsReminder() {
+// Show control reminder with custom icon and text, fade out after 4 seconds
+function showControlReminder(iconHtml: string, text: string) {
+  // Clear any existing timeout
+  if (reminderTimeout) {
+    clearTimeout(reminderTimeout)
+  }
+  
+  // Update content
+  reminderIcon.innerHTML = iconHtml
+  reminderText.textContent = text
+  
   // Show the reminder
-  cameraControlsReminder.classList.add('show')
-  cameraControlsReminder.classList.remove('fade-out')
+  controlReminder.classList.add('show')
+  controlReminder.classList.remove('fade-out')
   
   // Fade out after 4 seconds
-  setTimeout(() => {
-    cameraControlsReminder.classList.add('fade-out')
-    cameraControlsReminder.classList.remove('show')
+  reminderTimeout = setTimeout(() => {
+    controlReminder.classList.add('fade-out')
+    controlReminder.classList.remove('show')
+    reminderTimeout = null
   }, 4000)
 }
 
@@ -402,12 +422,16 @@ scaleSlider.addEventListener('input', () => {
 enableControlsCheckbox.addEventListener('change', () => {
   // Show reminder when enabling camera controls
   if (enableControlsCheckbox.checked) {
-    showCameraControlsReminder()
+    showControlReminder(dragIcon, 'Drag to move the camera!')
   }
   throttledUpdateAvatar()
 })
 
 enableZoomCheckbox.addEventListener('change', () => {
+  // Show reminder when enabling zoom
+  if (enableZoomCheckbox.checked) {
+    showControlReminder(zoomIcon, 'Zoom in and out!')
+  }
   throttledUpdateAvatar()
 })
 
