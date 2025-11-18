@@ -113,7 +113,7 @@ h1 {
   position: fixed;
   top: 20px;
   right: 20px;
-  width: 200px;
+  width: 240px;
   z-index: 1000;
 }
 
@@ -122,7 +122,6 @@ h1 {
   display: block;
   border-radius: 8px;
   background: #000;
-  border: 1px solid #27272a;
 }
 
 .controls {
