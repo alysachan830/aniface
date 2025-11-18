@@ -258,12 +258,11 @@ button:disabled {
 .slider-group input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 16px;
-  height: 16px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
-  background: #fafafa;
+  background: #a1a1aa;
   cursor: pointer;
-  border: 2px solid #fafafa;
   transition: all 0.2s ease;
 }
 
@@ -273,12 +272,11 @@ button:disabled {
 }
 
 .slider-group input[type="range"]::-moz-range-thumb {
-  width: 16px;
-  height: 16px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
-  background: #fafafa;
+  background: #a1a1aa;
   cursor: pointer;
-  border: 2px solid #fafafa;
   transition: all 0.2s ease;
 }
 
