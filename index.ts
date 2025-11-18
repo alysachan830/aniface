@@ -11,6 +11,7 @@ const toggleBtn = document.getElementById('toggleBtn') as HTMLButtonElement
 const statusEl = document.getElementById('status') as HTMLDivElement
 const copyBtn = document.getElementById('copyBtn') as HTMLButtonElement
 const toast = document.getElementById('toast') as HTMLDivElement
+const cameraControlsReminder = document.getElementById('camera-controls-reminder') as HTMLDivElement
 const codeTitleTry = document.getElementById('code-title-try') as HTMLHeadingElement
 const codeTitleUpdated = document.getElementById('code-title-updated') as HTMLHeadingElement
 
@@ -122,6 +123,19 @@ function showUpdatedStatus() {
     codeTitleUpdated.classList.add('code-title-hidden')
     codeTitleTimeout = null
   }, 2000)
+}
+
+// Show camera controls reminder and fade out after 4 seconds
+function showCameraControlsReminder() {
+  // Show the reminder
+  cameraControlsReminder.classList.add('show')
+  cameraControlsReminder.classList.remove('fade-out')
+  
+  // Fade out after 4 seconds
+  setTimeout(() => {
+    cameraControlsReminder.classList.add('fade-out')
+    cameraControlsReminder.classList.remove('show')
+  }, 4000)
 }
 
 // Update code viewer with current config values and highlight changes
@@ -386,6 +400,10 @@ scaleSlider.addEventListener('input', () => {
 
 // Checkbox event listeners
 enableControlsCheckbox.addEventListener('change', () => {
+  // Show reminder when enabling camera controls
+  if (enableControlsCheckbox.checked) {
+    showCameraControlsReminder()
+  }
   throttledUpdateAvatar()
 })
 
