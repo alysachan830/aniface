@@ -39,14 +39,14 @@ npm install three @mediapipe/tasks-vision
 ## Quick Start
 
 ```javascript
-import { FacialAvatar } from 'aniface'
+import { Aniface } from 'aniface'
 
 // Get your video and canvas elements
 const videoElement = document.getElementById('webcam')
 const canvasElement = document.getElementById('avatar')
 
 // Create the avatar
-const avatar = new FacialAvatar({
+const avatar = new Aniface({
   videoElement,
   canvasElement,
   modelPath: '/path/to/your/model.glb',
@@ -68,7 +68,7 @@ avatar.destroy()
 ### Basic Configuration
 
 ```javascript
-new FacialAvatar({
+new Aniface({
   // Required
   videoElement: HTMLVideoElement,    // Video element for webcam
   canvasElement: HTMLCanvasElement,  // Canvas for rendering avatar
@@ -87,7 +87,7 @@ new FacialAvatar({
 #### 1. Video Call Avatar (Close-up Face)
 
 ```javascript
-const avatar = new FacialAvatar({
+const avatar = new Aniface({
   videoElement,
   canvasElement,
   modelPath: '/models/avatar.glb',
@@ -111,7 +111,7 @@ const avatar = new FacialAvatar({
 #### 2. Full Avatar Display
 
 ```javascript
-const avatar = new FacialAvatar({
+const avatar = new Aniface({
   videoElement,
   canvasElement,
   modelPath: '/models/full-body.glb',
@@ -133,7 +133,7 @@ const avatar = new FacialAvatar({
 #### 3. Custom Canvas Size
 
 ```javascript
-const avatar = new FacialAvatar({
+const avatar = new Aniface({
   videoElement,
   canvasElement,
   modelPath: '/models/avatar.glb',
@@ -164,7 +164,7 @@ const avatar = new FacialAvatar({
 Fine-tune expression intensity:
 
 ```javascript
-const avatar = new FacialAvatar({
+const avatar = new Aniface({
   videoElement,
   canvasElement,
   modelPath: '/models/avatar.glb',
@@ -183,7 +183,7 @@ const avatar = new FacialAvatar({
 ### Camera & Lighting
 
 ```javascript
-const avatar = new FacialAvatar({
+const avatar = new Aniface({
   videoElement,
   canvasElement,
   modelPath: '/models/avatar.glb',
@@ -209,7 +209,7 @@ const avatar = new FacialAvatar({
 ### MediaPipe Configuration
 
 ```javascript
-const avatar = new FacialAvatar({
+const avatar = new Aniface({
   videoElement,
   canvasElement,
   modelPath: '/models/avatar.glb',
@@ -242,7 +242,7 @@ Aniface maps MediaPipe blendshapes to these standard names:
 
 ## API Reference
 
-### FacialAvatar Class
+### Aniface Class
 
 #### Methods
 

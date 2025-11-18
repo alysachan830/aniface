@@ -1,11 +1,11 @@
 /**
- * FacialAvatar core functionality tests
+ * Aniface core functionality tests
  */
 
 import { describe, test, expect, beforeEach, vi } from 'vitest'
-import { FacialAvatar } from '../src/FacialAvatar'
+import { Aniface } from '../src/Aniface'
 
-describe('FacialAvatar', () => {
+describe('Aniface', () => {
   let mockVideo: HTMLVideoElement
   let mockCanvas: HTMLCanvasElement
   
@@ -17,18 +17,18 @@ describe('FacialAvatar', () => {
 
   describe('Instantiation', () => {
     test('creates instance with valid config', () => {
-      const avatar = new FacialAvatar({
+      const avatar = new Aniface({
         videoElement: mockVideo,
         canvasElement: mockCanvas,
         modelPath: '/test-model.glb'
       })
       
       expect(avatar).toBeDefined()
-      expect(avatar).toBeInstanceOf(FacialAvatar)
+      expect(avatar).toBeInstanceOf(Aniface)
     })
 
     test('instance has expected initial state', () => {
-      const avatar = new FacialAvatar({
+      const avatar = new Aniface({
         videoElement: mockVideo,
         canvasElement: mockCanvas,
         modelPath: '/test-model.glb'
@@ -42,7 +42,7 @@ describe('FacialAvatar', () => {
   describe('Config Validation', () => {
     test('throws error when videoElement is missing', () => {
       expect(() => {
-        new FacialAvatar({
+        new Aniface({
           videoElement: null as any,
           canvasElement: mockCanvas,
           modelPath: '/test-model.glb'
@@ -52,7 +52,7 @@ describe('FacialAvatar', () => {
 
     test('throws error when canvasElement is missing', () => {
       expect(() => {
-        new FacialAvatar({
+        new Aniface({
           videoElement: mockVideo,
           canvasElement: null as any,
           modelPath: '/test-model.glb'
@@ -62,7 +62,7 @@ describe('FacialAvatar', () => {
 
     test('throws error when modelPath is missing', () => {
       expect(() => {
-        new FacialAvatar({
+        new Aniface({
           videoElement: mockVideo,
           canvasElement: mockCanvas,
           modelPath: null as any
@@ -72,7 +72,7 @@ describe('FacialAvatar', () => {
 
     test('throws error when videoElement is not HTMLVideoElement', () => {
       expect(() => {
-        new FacialAvatar({
+        new Aniface({
           videoElement: document.createElement('div') as any,
           canvasElement: mockCanvas,
           modelPath: '/test-model.glb'
@@ -82,7 +82,7 @@ describe('FacialAvatar', () => {
 
     test('throws error when canvasElement is not HTMLCanvasElement', () => {
       expect(() => {
-        new FacialAvatar({
+        new Aniface({
           videoElement: mockVideo,
           canvasElement: document.createElement('div') as any,
           modelPath: '/test-model.glb'
@@ -93,17 +93,17 @@ describe('FacialAvatar', () => {
 
   describe('Lifecycle', () => {
     test('throws error when starting before initialization', () => {
-      const avatar = new FacialAvatar({
+      const avatar = new Aniface({
         videoElement: mockVideo,
         canvasElement: mockCanvas,
         modelPath: '/test-model.glb'
       })
       
-      expect(() => avatar.start()).toThrow('FacialAvatar not initialized')
+      expect(() => avatar.start()).toThrow('Aniface not initialized')
     })
 
     test('stop works when not running', () => {
-      const avatar = new FacialAvatar({
+      const avatar = new Aniface({
         videoElement: mockVideo,
         canvasElement: mockCanvas,
         modelPath: '/test-model.glb'
@@ -114,7 +114,7 @@ describe('FacialAvatar', () => {
     })
 
     test('destroy cleans up state', () => {
-      const avatar = new FacialAvatar({
+      const avatar = new Aniface({
         videoElement: mockVideo,
         canvasElement: mockCanvas,
         modelPath: '/test-model.glb'
@@ -129,7 +129,7 @@ describe('FacialAvatar', () => {
 
   describe('Getters', () => {
     test('getVideoElement returns the video element', () => {
-      const avatar = new FacialAvatar({
+      const avatar = new Aniface({
         videoElement: mockVideo,
         canvasElement: mockCanvas,
         modelPath: '/test-model.glb'
@@ -139,7 +139,7 @@ describe('FacialAvatar', () => {
     })
 
     test('getCanvasElement returns the canvas element', () => {
-      const avatar = new FacialAvatar({
+      const avatar = new Aniface({
         videoElement: mockVideo,
         canvasElement: mockCanvas,
         modelPath: '/test-model.glb'
@@ -149,7 +149,7 @@ describe('FacialAvatar', () => {
     })
 
     test('getRenderer returns null before initialization', () => {
-      const avatar = new FacialAvatar({
+      const avatar = new Aniface({
         videoElement: mockVideo,
         canvasElement: mockCanvas,
         modelPath: '/test-model.glb'
@@ -159,7 +159,7 @@ describe('FacialAvatar', () => {
     })
 
     test('getLandmarkManager returns null before initialization', () => {
-      const avatar = new FacialAvatar({
+      const avatar = new Aniface({
         videoElement: mockVideo,
         canvasElement: mockCanvas,
         modelPath: '/test-model.glb'
@@ -173,7 +173,7 @@ describe('FacialAvatar', () => {
     test('calls onReady callback when provided', async () => {
       const onReady = vi.fn()
       
-      new FacialAvatar({
+      new Aniface({
         videoElement: mockVideo,
         canvasElement: mockCanvas,
         modelPath: '/test-model.glb',
@@ -182,7 +182,7 @@ describe('FacialAvatar', () => {
 
         // Verify callback is NOT called during construction.
         // The onReady callback should only fire after initialize() completes,
-        // not when the FacialAvatar instance is created.
+        // not when the Aniface instance is created.
 
         // Note: This test doesn't verify the callback actually fires after initialize()
         // because that would require mocking the entire MediaPipe + Three.js initialization chain.
@@ -193,7 +193,7 @@ describe('FacialAvatar', () => {
     test('calls onError callback when provided', () => {
       const onError = vi.fn()
       
-      new FacialAvatar({
+      new Aniface({
         videoElement: mockVideo,
         canvasElement: mockCanvas,
         modelPath: '/test-model.glb',

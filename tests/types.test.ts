@@ -5,7 +5,7 @@
 
 import { describe, test, expect } from 'vitest'
 import type {
-  FacialAvatarConfig,
+  AnifaceConfig,
   BlendshapeMultipliers,
   BlendshapeCategory
 } from '../src/types'
@@ -23,8 +23,8 @@ import type {
 } from '../src/core/Avatar'
 
 describe('Type Definitions', () => {
-  test('FacialAvatarConfig type compiles', () => {
-    const config: FacialAvatarConfig = {
+  test('AnifaceConfig type compiles', () => {
+    const config: AnifaceConfig = {
       videoElement: document.createElement('video'),
       canvasElement: document.createElement('canvas'),
       modelPath: '/test.glb'
@@ -33,8 +33,8 @@ describe('Type Definitions', () => {
     expect(config).toBeDefined()
   })
 
-  test('FacialAvatarConfig with all optional properties compiles', () => {
-    const config: FacialAvatarConfig = {
+  test('AnifaceConfig with all optional properties compiles', () => {
+    const config: AnifaceConfig = {
       videoElement: document.createElement('video'),
       canvasElement: document.createElement('canvas'),
       modelPath: '/test.glb',

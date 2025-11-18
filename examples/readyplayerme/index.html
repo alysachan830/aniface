@@ -281,7 +281,7 @@
   </div>
 
   <script type="module">
-    import { FacialAvatar } from '../../src/index.ts'
+    import { Aniface } from '../../src/index.ts'
 
     let avatar = null
     let webcamStream = null
@@ -346,7 +346,7 @@
       try {
         setStatus('Loading Ready Player Me avatar...', 'loading')
         
-        avatar = new FacialAvatar({
+        avatar = new Aniface({
           videoElement: webcam,
           canvasElement: canvas,
           modelPath: RPM_MODEL_URL,

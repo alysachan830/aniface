@@ -4,7 +4,7 @@
  */
 
 // Main exports
-export { FacialAvatar } from './FacialAvatar'
+export { Aniface } from './Aniface'
 
 // Core exports (for advanced usage)
 export { FacialLandmarkManager } from './core/FacialLandmarkManager'
@@ -24,8 +24,8 @@ export {
 
 // Type exports
 export type {
-  FacialAvatarConfig,
-  FacialAvatarEvents,
+  AnifaceConfig,
+  AnifaceEvents,
   BlendshapeMultipliers,
   BlendshapeCategory
 } from './types'

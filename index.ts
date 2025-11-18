@@ -1,6 +1,6 @@
-import { FacialAvatar } from './src'
+import { Aniface } from './src'
 
-let avatar: FacialAvatar | null = null
+let avatar: Aniface | null = null
 let webcamStream: MediaStream | null = null
 let lastFrameTime = Date.now()
 let frameCount = 0
@@ -182,7 +182,7 @@ function updateConfigCode() {
     cameraConfigProps += `,\n    enableZoom: <span class="code-highlight">true</span>`
   }
 
-  const code = `const avatar = new FacialAvatar({
+  const code = `const avatar = new Aniface({
   // videoElement: Your HTML video element,
   // canvasElement: Your canvas HTML canvas element,
   // modelPath: Your 3D model GLTF file path,
@@ -270,7 +270,7 @@ async function initAvatar() {
     const controlsEnabled = enableControlsCheckbox.checked
     const zoomEnabled = enableZoomCheckbox.checked
     
-    avatar = new FacialAvatar({
+    avatar = new Aniface({
       videoElement: webcam,
       canvasElement: canvas,
       modelPath: './examples/raccoon_head_small.glb',

@@ -1,20 +1,20 @@
 /**
- * Main FacialAvatar class - Entry point for the library
+ * Main Aniface class - Entry point for the library
  */
 
-import type { FacialAvatarConfig } from './types'
+import type { AnifaceConfig } from './types'
 import { FacialLandmarkManager } from './core/FacialLandmarkManager'
 import { AvatarRenderer } from './core/AvatarRenderer'
 
 /**
- * FacialAvatar - Animate 3D avatars with real-time facial tracking
+ * Aniface - Animate 3D avatars with real-time facial tracking
  * 
  * This is the main class that brings together facial landmark detection,
  * 3D rendering, and blendshape animation into a simple, unified API.
  * 
  * @example
  * ```typescript
- * const avatar = new FacialAvatar({
+ * const avatar = new Aniface({
  *   videoElement: document.getElementById('webcam') as HTMLVideoElement,
  *   canvasElement: document.getElementById('avatar') as HTMLCanvasElement,
  *   modelPath: '/models/avatar.glb',
@@ -30,8 +30,8 @@ import { AvatarRenderer } from './core/AvatarRenderer'
  * avatar.destroy()
  * ```
  */
-export class FacialAvatar {
-  private config: FacialAvatarConfig
+export class Aniface {
+  private config: AnifaceConfig
   private landmarkManager: FacialLandmarkManager | null = null
   private avatarRenderer: AvatarRenderer | null = null
   private isRunning: boolean = false
@@ -40,7 +40,7 @@ export class FacialAvatar {
   private noFaceDetectedCount: number = 0
   private readonly NO_FACE_THRESHOLD = 5 // Frames before triggering callback
 
-  constructor(config: FacialAvatarConfig) {
+  constructor(config: AnifaceConfig) {
     this.config = config
     this.validateConfig()
   }
@@ -76,12 +76,12 @@ export class FacialAvatar {
    */
   async initialize(): Promise<void> {
     if (this.isInitialized) {
-      console.warn('FacialAvatar already initialized')
+      console.warn('Aniface already initialized')
       return
     }
 
     try {
-      console.log('🎭 Initializing FacialAvatar...')
+      console.log('🎭 Initializing Aniface...')
       
       // Initialize landmark manager
       this.landmarkManager = new FacialLandmarkManager(this.config.landmarkConfig)
@@ -103,7 +103,7 @@ export class FacialAvatar {
       console.log('✅ Avatar renderer initialized')
       
       this.isInitialized = true
-      console.log('✅ FacialAvatar initialized successfully')
+      console.log('✅ Aniface initialized successfully')
       
       // Call ready callback
       if (this.config.onReady) {
@@ -112,7 +112,7 @@ export class FacialAvatar {
       
     } catch (error) {
       const err = error instanceof Error ? error : new Error(String(error))
-      console.error('❌ Failed to initialize FacialAvatar:', err)
+      console.error('❌ Failed to initialize Aniface:', err)
       
       // Cleanup any partially initialized resources to prevent memory leaks
       this.cleanupResources()
@@ -149,7 +149,7 @@ export class FacialAvatar {
    */
   start(): void {
     if (!this.isInitialized) {
-      throw new Error('FacialAvatar not initialized. Call initialize() first.')
+      throw new Error('Aniface not initialized. Call initialize() first.')
     }
     
     if (this.isRunning) {
@@ -290,12 +290,12 @@ export class FacialAvatar {
    * Call this when you're done with the avatar
    */
   destroy(): void {
-    console.log('🧹 Destroying FacialAvatar...')
+    console.log('🧹 Destroying Aniface...')
     
     this.stop()
     this.cleanupResources()
     
-    console.log('✅ FacialAvatar destroyed')
+    console.log('✅ Aniface destroyed')
   }
 }
 

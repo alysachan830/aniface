@@ -9,9 +9,9 @@ import type { FacialLandmarkManagerConfig } from './core/FacialLandmarkManager'
 import type { CameraConfig, LightingConfig } from './core/AvatarRenderer'
 
 /**
- * Configuration options for FacialAvatar
+ * Configuration options for Aniface
  */
-export interface FacialAvatarConfig {
+export interface AnifaceConfig {
   /** Video element containing the face to track */
   videoElement: HTMLVideoElement
   
@@ -56,9 +56,9 @@ export interface FacialAvatarConfig {
 export type BlendshapeMultipliers = Partial<Record<MediaPipeBlendshapeName, number>>
 
 /**
- * Event handlers for FacialAvatar
+ * Event handlers for Aniface
  */
-export interface FacialAvatarEvents {
+export interface AnifaceEvents {
   /** Fired when facial landmarks are detected */
   landmarksDetected: (data: FaceLandmarkerResult) => void
   
