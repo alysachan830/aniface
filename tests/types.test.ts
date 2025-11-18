@@ -46,9 +46,16 @@ describe('Type Definitions', () => {
         eyeBlinkLeft: 1.2,
         eyeBlinkRight: 1.2
       },
-      enableControls: true,
-      enableZoom: false,
-      fov: 60,
+      cameraConfig: {
+        fov: 60,
+        enableControls: true,
+        enableZoom: false
+      },
+      lightingConfig: {
+        ambientIntensity: 0.6,
+        directionalIntensity: 0.9,
+        directionalPosition: [1, 2, 3]
+      },
       modelOptions: {
         center: true,
         scale: 1.0
@@ -96,9 +103,11 @@ describe('Type Definitions', () => {
     const config: AvatarRendererConfig = {
       canvas: document.createElement('canvas'),
       modelPath: '/model.glb',
-      enableControls: true,
-      enableZoom: false,
-      fov: 60
+      cameraConfig: {
+        fov: 60,
+        enableControls: true,
+        enableZoom: false
+      }
     }
     
     expect(config).toBeDefined()
@@ -106,8 +115,11 @@ describe('Type Definitions', () => {
 
   test('CameraConfig type compiles', () => {
     const config: CameraConfig = {
+      fov: 60,
       near: 0.1,
-      far: 1000
+      far: 1000,
+      enableControls: true,
+      enableZoom: false
     }
     
     expect(config).toBeDefined()

@@ -351,13 +351,12 @@
           canvasElement: canvas,
           modelPath: RPM_MODEL_URL,
           
-          // Enable camera controls for RPM full-body avatar
-          // Users can zoom/pan to focus on the face
-          enableControls: true,
-          enableZoom: true,
-          
-          // Wider FOV for full body visibility
-          fov: 50,
+          // Camera configuration
+          cameraConfig: {
+            fov: 50,                         // Wider FOV for full body visibility
+            enableControls: true,            // Enable rotation for RPM full-body avatar
+            enableZoom: true                 // Users can zoom to focus on the face
+          },
           
           // Blendshape adjustments
           // Start with conservative values, can be adjusted based on testing

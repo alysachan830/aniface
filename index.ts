@@ -139,21 +139,23 @@ function updateConfigCode() {
     return value !== originalValue ? `<span class="code-highlight">${value}</span>` : value
   }
 
-  // Build optional properties
-  let optionalProps = ''
+  // Build optional cameraConfig properties
+  let cameraConfigProps = `    fov: ${highlight(currentFov, ORIGINAL_CONFIG.fov)}`
   if (currentEnableControls) {
-    optionalProps += `  enableControls: <span class="code-highlight">true</span>,\n`
+    cameraConfigProps += `,\n    enableControls: <span class="code-highlight">true</span>`
   }
   if (currentEnableZoom) {
-    optionalProps += `  enableZoom: <span class="code-highlight">true</span>,\n`
+    cameraConfigProps += `,\n    enableZoom: <span class="code-highlight">true</span>`
   }
 
   const code = `const avatar = new FacialAvatar({
   // videoElement: Your HTML video element,
   // canvasElement: Your canvas HTML canvas element,
   // modelPath: Your 3D model GLTF file path,
-  fov: ${highlight(currentFov, ORIGINAL_CONFIG.fov)},
-${optionalProps}  blendshapeMultipliers: {
+  cameraConfig: {
+${cameraConfigProps}
+  },
+  blendshapeMultipliers: {
     eyeBlinkLeft: ${highlight(currentEyeBlink, ORIGINAL_CONFIG.eyeBlink)},
     eyeBlinkRight: ${highlight(currentEyeBlink, ORIGINAL_CONFIG.eyeBlink)},
     jawOpen: ${highlight(currentJawOpen, ORIGINAL_CONFIG.jawOpen)},
@@ -239,10 +241,12 @@ async function initAvatar() {
       canvasElement: canvas,
       modelPath: './examples/raccoon_head_small.glb',
       
-      // Camera controls (read from UI)
-      fov: parseInt(fovSlider.value),
-      enableControls: controlsEnabled,
-      enableZoom: zoomEnabled,
+      // Camera configuration
+      cameraConfig: {
+        fov: parseInt(fovSlider.value),
+        enableControls: controlsEnabled,
+        enableZoom: zoomEnabled
+      },
       
       // Blendshape adjustments
       blendshapeMultipliers: {

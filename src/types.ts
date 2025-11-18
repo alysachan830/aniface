@@ -6,6 +6,7 @@ import type { FaceLandmarkerResult } from '@mediapipe/tasks-vision'
 import type { MediaPipeBlendshapeName } from './utils/blendshapeRetargeting'
 import type { LoadModelOptions } from './core/Avatar'
 import type { FacialLandmarkManagerConfig } from './core/FacialLandmarkManager'
+import type { CameraConfig, LightingConfig } from './core/AvatarRenderer'
 
 /**
  * Configuration options for FacialAvatar
@@ -35,14 +36,11 @@ export interface FacialAvatarConfig {
   /** Optional multipliers for blendshape values (0-2 range recommended) */
   blendshapeMultipliers?: BlendshapeMultipliers
   
-  /** Enable orbit controls (default: true) */
-  enableControls?: boolean
+  /** Camera configuration (fov, controls, zoom) */
+  cameraConfig?: Partial<CameraConfig>
   
-  /** Enable zoom controls (default: false) */
-  enableZoom?: boolean
-  
-  /** Camera field of view in degrees (default: 60) */
-  fov?: number
+  /** Lighting configuration */
+  lightingConfig?: Partial<LightingConfig>
   
   /** Model loading options (position, rotation, scale) */
   modelOptions?: LoadModelOptions

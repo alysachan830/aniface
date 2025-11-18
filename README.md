@@ -98,10 +98,13 @@ const avatar = new FacialAvatar({
     center: true,
     autoRotate: true
   },
-  fov: 70,           // Wider FOV = closer view
   
-  enableControls: false,  // Disable user camera controls
-  enableZoom: false
+  // Camera settings
+  cameraConfig: {
+    fov: 70,           // Wider FOV = closer view
+    enableControls: false,  // Disable user camera controls
+    enableZoom: false
+  }
 })
 ```
 
@@ -117,10 +120,13 @@ const avatar = new FacialAvatar({
   modelOptions: { 
     scale: 1.0       // Default scale
   },
-  fov: 60,           // Standard FOV
   
-  enableControls: true,  // Let users rotate
-  enableZoom: true       // Let users zoom
+  // Camera settings
+  cameraConfig: {
+    fov: 60,           // Standard FOV
+    enableControls: true,  // Let users rotate
+    enableZoom: true       // Let users zoom
+  }
 })
 ```
 
@@ -134,7 +140,11 @@ const avatar = new FacialAvatar({
   
   // Adjust for your canvas aspect ratio
   modelOptions: { scale: 0.5 },
-  fov: 75,
+  
+  // Camera settings
+  cameraConfig: {
+    fov: 75
+  },
   
   // Handle window resize
   onReady: () => {
@@ -179,29 +189,19 @@ const avatar = new FacialAvatar({
   modelPath: '/models/avatar.glb',
   
   // Camera settings
-  fov: 60,                    // Field of view
-  enableControls: true,       // Orbit controls
-  enableZoom: false,          // Disable zoom
+  cameraConfig: {
+    fov: 60,                 // Field of view
+    enableControls: true,    // Orbit controls
+    enableZoom: false,       // Disable zoom
+    near: 0.1,              // Near clipping plane
+    far: 1000               // Far clipping plane
+  },
   
-  // Renderer settings
-  rendererConfig: {
-    antialias: true,
-    alpha: true,
-    camera: {
-      near: 0.1,
-      far: 1000
-    },
-    lighting: {
-      ambient: { 
-        color: 0xffffff, 
-        intensity: 0.6 
-      },
-      directional: {
-        color: 0xffffff,
-        intensity: 0.9,
-        position: { x: 5, y: 5, z: 5 }
-      }
-    }
+  // Lighting settings
+  lightingConfig: {
+    ambientIntensity: 0.6,              // Ambient light intensity
+    directionalIntensity: 0.9,          // Main light intensity
+    directionalPosition: [5, 5, 5]      // Light position
   }
 })
 ```

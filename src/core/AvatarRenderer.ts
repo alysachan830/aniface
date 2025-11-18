@@ -12,10 +12,16 @@ import { retargetBlendshapes } from '../utils/blendshapeRetargeting'
  * Camera configuration
  */
 export interface CameraConfig {
-  /** Camera near clipping plane */
-  near: number
-  /** Camera far clipping plane */
-  far: number
+  /** Camera field of view in degrees (default: 60) */
+  fov?: number
+  /** Camera near clipping plane (default: 0.01) */
+  near?: number
+  /** Camera far clipping plane (default: 2000) */
+  far?: number
+  /** Enable orbit controls (default: false) */
+  enableControls?: boolean
+  /** Enable zoom controls (default: true) */
+  enableZoom?: boolean
 }
 
 /**
@@ -40,16 +46,7 @@ export interface AvatarRendererConfig {
   /** Path to GLB model file */
   modelPath: string
   
-  /** Enable orbit controls (default: true) */
-  enableControls?: boolean
-  
-  /** Enable zoom controls (default: false) */
-  enableZoom?: boolean
-  
-  /** Camera field of view in degrees (default: 60) */
-  fov?: number
-  
-  /** Camera configuration (optional, defaults: near=0.01, far=2000) */
+  /** Camera configuration (optional) */
   cameraConfig?: Partial<CameraConfig>
   
   /** Custom blendshape multipliers to adjust expression intensity */
@@ -65,9 +62,11 @@ export interface AvatarRendererConfig {
 /**
  * Internal configuration with all defaults applied
  */
-interface AvatarRendererInternalConfig extends Required<Omit<AvatarRendererConfig, 'lightingConfig' | 'cameraConfig'>> {
-  cameraConfig: CameraConfig
+interface AvatarRendererInternalConfig extends Required<Omit<AvatarRendererConfig, 'lightingConfig' | 'cameraConfig' | 'blendshapeMultipliers' | 'modelOptions'>> {
+  cameraConfig: Required<CameraConfig>
   lightingConfig: LightingConfig
+  blendshapeMultipliers: Record<string, number>
+  modelOptions: LoadModelOptions
 }
 
 /**
@@ -114,12 +113,12 @@ export class AvatarRenderer {
     this.config = {
       canvas: config.canvas,
       modelPath: config.modelPath,
-      enableControls: config.enableControls ?? true,
-      enableZoom: config.enableZoom ?? false,
-      fov: config.fov ?? 60,
       cameraConfig: {
+        fov: config.cameraConfig?.fov ?? 60,
         near: config.cameraConfig?.near ?? 0.01,
-        far: config.cameraConfig?.far ?? 2000
+        far: config.cameraConfig?.far ?? 2000,
+        enableControls: config.cameraConfig?.enableControls ?? false,
+        enableZoom: config.cameraConfig?.enableZoom ?? true
       },
       blendshapeMultipliers: config.blendshapeMultipliers ?? {},
       modelOptions: config.modelOptions ?? {},
@@ -149,7 +148,7 @@ export class AvatarRenderer {
     // Set up camera
     const aspect = this.config.canvas.width / this.config.canvas.height || 1
     this.camera = new THREE.PerspectiveCamera(
-      this.config.fov,
+      this.config.cameraConfig.fov,
       aspect,
       this.config.cameraConfig.near,
       this.config.cameraConfig.far
@@ -193,12 +192,12 @@ export class AvatarRenderer {
     
     // Set up camera controls
     // Create OrbitControls if either controls or zoom is enabled
-    if (this.config.enableControls || this.config.enableZoom) {
+    if (this.config.cameraConfig.enableControls || this.config.cameraConfig.enableZoom) {
       this.controls = new OrbitControls(this.camera, this.renderer.domElement)
       this.controls.enableDamping = true
       this.controls.dampingFactor = 0.05  // Smoother damping
-      this.controls.enableZoom = this.config.enableZoom
-      this.controls.enableRotate = this.config.enableControls
+      this.controls.enableZoom = this.config.cameraConfig.enableZoom
+      this.controls.enableRotate = this.config.cameraConfig.enableControls
       this.controls.enablePan = false
       this.controls.target.set(0, 0, 0)
       
@@ -207,7 +206,7 @@ export class AvatarRenderer {
       this.controls.maxDistance = 10   // Max zoom distance
       
       this.controls.update()
-      console.log('✅ OrbitControls enabled - Rotate:', this.config.enableControls, 'Zoom:', this.config.enableZoom)
+      console.log('✅ OrbitControls enabled - Rotate:', this.config.cameraConfig.enableControls, 'Zoom:', this.config.cameraConfig.enableZoom)
     } else {
       console.log('ℹ️ OrbitControls disabled (both controls and zoom are off)')
     }
