@@ -273,7 +273,7 @@ async function initAvatar() {
     avatar = new Aniface({
       videoElement: webcam,
       canvasElement: canvas,
-      modelPath: './examples/raccoon_head_small.glb',
+      modelPath: './raccoon_head_small.glb',
       
       // Camera configuration
       cameraConfig: {
