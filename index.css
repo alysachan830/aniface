@@ -81,18 +81,20 @@ h1 {
 
 .panel h3 {
   font-size: 1rem;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
   align-items: center;
-  color: #a1a1aa;
+  color: #fafafa;
   font-weight: 400;
+}
+
+.panel .sliders {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 
 .blendshapes-sliders {
   margin-bottom: 40px;
-}
-
-.other-options-sliders {
-    margin-bottom: 40px;
 }
 
 #avatar {
@@ -229,7 +231,7 @@ button:disabled {
   justify-content: space-between;
   margin-bottom: 8px;
   font-size: 0.875rem;
-  color: #fafafa;
+  color: #a1a1aa;
 }
 
 .slider-group label .slider-value,
@@ -306,7 +308,7 @@ button:disabled {
   align-items: center;
   gap: 8px;
   cursor: pointer;
-  color: #fafafa;
+  color: #a1a1aa;
   font-size: 0.875rem;
 }
 
@@ -314,7 +316,7 @@ button:disabled {
   width: 16px;
   height: 16px;
   cursor: pointer;
-  accent-color: #fafafa;
+  accent-color: #a1a1aa;
 }
 
 .stats-bar {
