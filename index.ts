@@ -5,6 +5,10 @@ let webcamStream: MediaStream | null = null
 let lastFrameTime = Date.now()
 let frameCount = 0
 
+// Avatar type tracking
+type AvatarType = 'raccoon' | 'rpm'
+let currentAvatarType: AvatarType = 'raccoon'
+
 const webcam = document.getElementById('webcam') as HTMLVideoElement
 const canvas = document.getElementById('avatar') as HTMLCanvasElement
 const toggleBtn = document.getElementById('toggleBtn') as HTMLButtonElement
@@ -16,6 +20,8 @@ const reminderIcon = controlReminder.querySelector('.reminder-icon') as HTMLDivE
 const reminderText = controlReminder.querySelector('.reminder-text') as HTMLSpanElement
 const codeTitleTry = document.getElementById('code-title-try') as HTMLHeadingElement
 const codeTitleUpdated = document.getElementById('code-title-updated') as HTMLHeadingElement
+const switchAvatarBtn = document.getElementById('switch-avatar-btn') as HTMLButtonElement
+const modelNameEl = document.getElementById('model-name') as HTMLSpanElement
 
 // Sliders
 const eyeBlinkSlider = document.getElementById('eyeBlink-slider') as HTMLInputElement
@@ -23,6 +29,10 @@ const jawOpenSlider = document.getElementById('jawOpen-slider') as HTMLInputElem
 const smileSlider = document.getElementById('smile-slider') as HTMLInputElement
 const fovSlider = document.getElementById('fov-slider') as HTMLInputElement
 const scaleSlider = document.getElementById('scale-slider') as HTMLInputElement
+
+// RPM-only sliders
+const ambientIntensitySlider = document.getElementById('ambientIntensity-slider') as HTMLInputElement
+const directionalIntensitySlider = document.getElementById('directionalIntensity-slider') as HTMLInputElement
 
 // Checkboxes
 const enableControlsCheckbox = document.getElementById('enable-controls-checkbox') as HTMLInputElement
@@ -35,16 +45,42 @@ const smileValue = document.getElementById('smile-value') as HTMLSpanElement
 const fovValue = document.getElementById('fov-value') as HTMLSpanElement
 const scaleValue = document.getElementById('scale-value') as HTMLSpanElement
 
+// RPM-only value displays
+const ambientIntensityValue = document.getElementById('ambientIntensity-value') as HTMLSpanElement
+const directionalIntensityValue = document.getElementById('directionalIntensity-value') as HTMLSpanElement
+
 // Stats
 const fpsValue = document.getElementById('fps-value') as HTMLSpanElement
 
-// Original config for comparison (never changes)
-const ORIGINAL_CONFIG = {
+// RPM-only elements
+const rpmOnlyElements = document.querySelectorAll('.rpm-only') as NodeListOf<HTMLElement>
+
+// Configuration defaults for Raccoon
+const RACCOON_DEFAULTS = {
   eyeBlink: 1.2,
   jawOpen: 1.0,
   smile: 1.1,
   fov: 60,
-  scale: 1.0
+  scale: 1.0,
+  enableControls: false,
+  enableZoom: false
+}
+
+// Configuration defaults for Ready Player Me
+const RPM_DEFAULTS = {
+  eyeBlink: 1.3,
+  jawOpen: 1.0,
+  smile: 1.0,
+  browInnerUp: 1.2,
+  browOuterUpLeft: 1.2,
+  browOuterUpRight: 1.2,
+  fov: 50,
+  scale: 2.4,
+  ambientIntensity: 1.2,
+  directionalIntensity: 1.5,
+  applyTransformToHeadOnly: true,
+  enableControls: false,
+  enableZoom: false
 }
 
 // Track if avatar is currently tracking
@@ -168,21 +204,28 @@ function updateConfigCode() {
   const currentEnableControls = enableControlsCheckbox.checked
   const currentEnableZoom = enableZoomCheckbox.checked
 
-  // Highlight if different from ORIGINAL config
-  const highlight = (value: number, originalValue: number) => {
-    return value !== originalValue ? `<span class="code-highlight">${value}</span>` : value
+  // Get the appropriate defaults based on avatar type
+  const defaults = currentAvatarType === 'raccoon' ? RACCOON_DEFAULTS : RPM_DEFAULTS
+
+  // Highlight if different from defaults
+  const highlight = (value: number, defaultValue: number) => {
+    return value !== defaultValue ? `<span class="code-highlight">${value}</span>` : value
   }
 
-  // Build optional cameraConfig properties
-  let cameraConfigProps = `    fov: ${highlight(currentFov, ORIGINAL_CONFIG.fov)}`
-  if (currentEnableControls) {
-    cameraConfigProps += `,\n    enableControls: <span class="code-highlight">true</span>`
-  }
-  if (currentEnableZoom) {
-    cameraConfigProps += `,\n    enableZoom: <span class="code-highlight">true</span>`
-  }
+  let code = ''
 
-  const code = `const avatar = new Aniface({
+  if (currentAvatarType === 'raccoon') {
+    // Raccoon config (simplified)
+    // Build optional cameraConfig properties
+    let cameraConfigProps = `    fov: ${highlight(currentFov, defaults.fov)}`
+    if (currentEnableControls) {
+      cameraConfigProps += `,\n    enableControls: <span class="code-highlight">true</span>`
+    }
+    if (currentEnableZoom) {
+      cameraConfigProps += `,\n    enableZoom: <span class="code-highlight">true</span>`
+    }
+
+    code = `const avatar = new Aniface({
   // videoElement: Your HTML video element,
   // canvasElement: Your canvas HTML canvas element,
   // modelPath: Your 3D model GLTF file path,
@@ -190,16 +233,61 @@ function updateConfigCode() {
 ${cameraConfigProps}
   },
   blendshapeMultipliers: {
-    eyeBlinkLeft: ${highlight(currentEyeBlink, ORIGINAL_CONFIG.eyeBlink)},
-    eyeBlinkRight: ${highlight(currentEyeBlink, ORIGINAL_CONFIG.eyeBlink)},
-    jawOpen: ${highlight(currentJawOpen, ORIGINAL_CONFIG.jawOpen)},
-    mouthSmileLeft: ${highlight(currentSmile, ORIGINAL_CONFIG.smile)},
-    mouthSmileRight: ${highlight(currentSmile, ORIGINAL_CONFIG.smile)}
+    eyeBlinkLeft: ${highlight(currentEyeBlink, defaults.eyeBlink)},
+    eyeBlinkRight: ${highlight(currentEyeBlink, defaults.eyeBlink)},
+    jawOpen: ${highlight(currentJawOpen, defaults.jawOpen)},
+    mouthSmileLeft: ${highlight(currentSmile, defaults.smile)},
+    mouthSmileRight: ${highlight(currentSmile, defaults.smile)}
   },
   modelOptions: {
-    scale: ${highlight(currentScale, ORIGINAL_CONFIG.scale)}
+    scale: ${highlight(currentScale, defaults.scale)}
   }
 })`
+  } else {
+    // RPM config (full with all RPM-specific settings)
+    const currentAmbientIntensity = parseFloat(ambientIntensitySlider.value)
+    const currentDirectionalIntensity = parseFloat(directionalIntensitySlider.value)
+
+    // Build optional cameraConfig properties
+    let cameraConfigProps = `    fov: ${highlight(currentFov, RPM_DEFAULTS.fov)}`
+    if (currentEnableControls) {
+      cameraConfigProps += `,\n    enableControls: <span class="code-highlight">true</span>`
+    }
+    if (currentEnableZoom) {
+      cameraConfigProps += `,\n    enableZoom: <span class="code-highlight">true</span>`
+    }
+
+    code = `const avatar = new Aniface({
+  // videoElement: Your HTML video element,
+  // canvasElement: Your canvas HTML canvas element,
+  modelPath: 'https://models.readyplayer.me/[YOUR_ID].glb?morphTargets=ARKit&useHands=false',
+  cameraConfig: {
+${cameraConfigProps}
+  },
+  blendshapeMultipliers: {
+    eyeBlinkLeft: ${highlight(currentEyeBlink, RPM_DEFAULTS.eyeBlink)},
+    eyeBlinkRight: ${highlight(currentEyeBlink, RPM_DEFAULTS.eyeBlink)},
+    browInnerUp: ${RPM_DEFAULTS.browInnerUp},
+    browOuterUpLeft: ${RPM_DEFAULTS.browOuterUpLeft},
+    browOuterUpRight: ${RPM_DEFAULTS.browOuterUpRight},
+    jawOpen: ${highlight(currentJawOpen, RPM_DEFAULTS.jawOpen)},
+    mouthSmileLeft: ${highlight(currentSmile, RPM_DEFAULTS.smile)},
+    mouthSmileRight: ${highlight(currentSmile, RPM_DEFAULTS.smile)}
+  },
+  lightingConfig: {
+    ambientIntensity: ${highlight(currentAmbientIntensity, RPM_DEFAULTS.ambientIntensity)},
+    directionalIntensity: ${highlight(currentDirectionalIntensity, RPM_DEFAULTS.directionalIntensity)},
+    directionalPosition: [2, 3, 3]
+  },
+  modelOptions: {
+    scale: ${highlight(currentScale, RPM_DEFAULTS.scale)},
+    center: true,
+    autoRotate: false,
+    rotation: 0,
+    applyTransformToHeadOnly: true
+  }
+})`
+  }
 
   document.getElementById('config-code')!.innerHTML = code
   
@@ -270,10 +358,45 @@ async function initAvatar() {
     const controlsEnabled = enableControlsCheckbox.checked
     const zoomEnabled = enableZoomCheckbox.checked
     
-    avatar = new Aniface({
+    // Determine model path based on avatar type
+    const modelPath = currentAvatarType === 'raccoon' 
+      ? './raccoon_head_small.glb'
+      : 'https://models.readyplayer.me/691c8682786317131cabbc31.glb?morphTargets=ARKit&useHands=false'
+    
+    // Build blendshape multipliers based on avatar type
+    const blendshapeMultipliers: any = {
+      eyeBlinkLeft: parseFloat(eyeBlinkSlider.value),
+      eyeBlinkRight: parseFloat(eyeBlinkSlider.value),
+      jawOpen: parseFloat(jawOpenSlider.value),
+      mouthSmileLeft: parseFloat(smileSlider.value),
+      mouthSmileRight: parseFloat(smileSlider.value)
+    }
+    
+    // Add RPM-specific blendshape multipliers (hardcoded values)
+    if (currentAvatarType === 'rpm') {
+      blendshapeMultipliers.browInnerUp = RPM_DEFAULTS.browInnerUp
+      blendshapeMultipliers.browOuterUpLeft = RPM_DEFAULTS.browOuterUpLeft
+      blendshapeMultipliers.browOuterUpRight = RPM_DEFAULTS.browOuterUpRight
+    }
+    
+    // Build model options based on avatar type
+    const modelOptions: any = {
+      scale: scaleValue
+    }
+    
+    // Add RPM-specific model options
+    if (currentAvatarType === 'rpm') {
+      modelOptions.center = true
+      modelOptions.autoRotate = false
+      modelOptions.rotation = 0
+      modelOptions.applyTransformToHeadOnly = RPM_DEFAULTS.applyTransformToHeadOnly
+    }
+    
+    // Build config object
+    const config: any = {
       videoElement: webcam,
       canvasElement: canvas,
-      modelPath: './raccoon_head_small.glb',
+      modelPath: modelPath,
       
       // Camera configuration
       cameraConfig: {
@@ -283,18 +406,10 @@ async function initAvatar() {
       },
       
       // Blendshape adjustments
-      blendshapeMultipliers: {
-        eyeBlinkLeft: parseFloat(eyeBlinkSlider.value),
-        eyeBlinkRight: parseFloat(eyeBlinkSlider.value),
-        jawOpen: parseFloat(jawOpenSlider.value),
-        mouthSmileLeft: parseFloat(smileSlider.value),
-        mouthSmileRight: parseFloat(smileSlider.value)
-      },
+      blendshapeMultipliers: blendshapeMultipliers,
       
-      // Model options (read from UI)
-      modelOptions: {
-        scale: scaleValue
-      },
+      // Model options
+      modelOptions: modelOptions,
       
       onReady: () => {
         console.log('✅ Avatar ready')
@@ -321,7 +436,7 @@ async function initAvatar() {
         }
       },
       
-      onError: (error) => {
+      onError: (error: Error) => {
         console.error('Avatar error:', error)
         setStatus(`Error: ${error.message}`, 'error')
       },
@@ -344,7 +459,18 @@ async function initAvatar() {
       onNoFaceDetected: () => {
         console.warn('No face detected')
       }
-    })
+    }
+    
+    // Add RPM-specific lighting config
+    if (currentAvatarType === 'rpm') {
+      config.lightingConfig = {
+        ambientIntensity: parseFloat(ambientIntensitySlider.value),
+        directionalIntensity: parseFloat(directionalIntensitySlider.value),
+        directionalPosition: [2, 3, 3]
+      }
+    }
+    
+    avatar = new Aniface(config)
     
     await avatar.initialize()
     
@@ -384,12 +510,66 @@ function toggleTracking() {
   }
 }
 
+// Switch between Raccoon and RPM avatars
+function switchAvatar() {
+  // Toggle avatar type
+  currentAvatarType = currentAvatarType === 'raccoon' ? 'rpm' : 'raccoon'
+  
+  // Get the appropriate defaults
+  const defaults = currentAvatarType === 'raccoon' ? RACCOON_DEFAULTS : RPM_DEFAULTS
+  
+  // Show/hide RPM-only controls
+  rpmOnlyElements.forEach(element => {
+    element.style.display = currentAvatarType === 'rpm' ? 'block' : 'none'
+  })
+  
+  // Update all sliders and displays to defaults
+  eyeBlinkSlider.value = defaults.eyeBlink.toString()
+  eyeBlinkValue.textContent = `${defaults.eyeBlink.toFixed(1)}x`
+  
+  jawOpenSlider.value = defaults.jawOpen.toString()
+  jawOpenValue.textContent = `${defaults.jawOpen.toFixed(1)}x`
+  
+  smileSlider.value = defaults.smile.toString()
+  smileValue.textContent = `${defaults.smile.toFixed(1)}x`
+  
+  fovSlider.value = defaults.fov.toString()
+  fovValue.textContent = `${defaults.fov}°`
+  
+  scaleSlider.value = defaults.scale.toString()
+  scaleValue.textContent = `${defaults.scale.toFixed(1)}x`
+  
+  enableControlsCheckbox.checked = defaults.enableControls
+  enableZoomCheckbox.checked = defaults.enableZoom
+  
+  // Update RPM-only sliders if switching to RPM
+  if (currentAvatarType === 'rpm') {
+    ambientIntensitySlider.value = RPM_DEFAULTS.ambientIntensity.toString()
+    ambientIntensityValue.textContent = `${RPM_DEFAULTS.ambientIntensity.toFixed(1)}x`
+    
+    directionalIntensitySlider.value = RPM_DEFAULTS.directionalIntensity.toString()
+    directionalIntensityValue.textContent = `${RPM_DEFAULTS.directionalIntensity.toFixed(1)}x`
+  }
+  
+  // Update button text
+  switchAvatarBtn.textContent = currentAvatarType === 'raccoon' 
+    ? 'Switch to Ready Player Me avatar' 
+    : 'Switch to Raccoon'
+  
+  // Update model name in stats
+  modelNameEl.textContent = currentAvatarType === 'raccoon' ? 'Raccoon' : 'Ready Player Me'
+  
+  // Reinitialize avatar with new configuration
+  updateAvatarConfig()
+}
+
 // Set canvas size explicitly BEFORE initialization
 canvas.width = 800
 canvas.height = 600
 
 // Event listeners
 toggleBtn.addEventListener('click', toggleTracking)
+switchAvatarBtn.addEventListener('click', switchAvatar)
 
 // Slider event listeners - update avatar in real-time with throttling
 eyeBlinkSlider.addEventListener('input', () => {
@@ -432,6 +612,17 @@ enableZoomCheckbox.addEventListener('change', () => {
   if (enableZoomCheckbox.checked) {
     showControlReminder(zoomIcon, 'Zoom in and out!')
   }
+  throttledUpdateAvatar()
+})
+
+// RPM-only slider event listeners
+ambientIntensitySlider.addEventListener('input', () => {
+  ambientIntensityValue.textContent = `${parseFloat(ambientIntensitySlider.value).toFixed(1)}x`
+  throttledUpdateAvatar()
+})
+
+directionalIntensitySlider.addEventListener('input', () => {
+  directionalIntensityValue.textContent = `${parseFloat(directionalIntensitySlider.value).toFixed(1)}x`
   throttledUpdateAvatar()
 })
 

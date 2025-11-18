@@ -70,6 +70,8 @@
                               value="1.1"
                       />
                   </div>
+
+                  <!-- RPM-only controls removed - brow blendshapes are hardcoded -->
               </div>
               <div>
                   <h3>cameraConfig</h3>
@@ -120,6 +122,46 @@
                               value="1.0"
                       />
                   </div>
+
+                  <!-- RPM-only controls (hidden - applyTransformToHeadOnly is hardcoded) -->
+                  <div class="rpm-only" style="display: none;">
+                  </div>
+              </div>
+              
+              <!-- RPM-only lighting config (hidden by default) -->
+              <div class="rpm-only" style="display: none;">
+                  <h3>lightingConfig</h3>
+                  <!-- Ambient Intensity Slider -->
+                  <div class="slider-group">
+                      <label>
+                          <span>ambientIntensity</span>
+                          <span id="ambientIntensity-value">1.2x</span>
+                      </label>
+                      <input
+                              type="range"
+                              id="ambientIntensity-slider"
+                              min="0.5"
+                              max="3.0"
+                              step="0.1"
+                              value="1.2"
+                      />
+                  </div>
+
+                  <!-- Directional Intensity Slider -->
+                  <div class="slider-group">
+                      <label>
+                          <span>directionalIntensity</span>
+                          <span id="directionalIntensity-value">1.5x</span>
+                      </label>
+                      <input
+                              type="range"
+                              id="directionalIntensity-slider"
+                              min="0.5"
+                              max="3.0"
+                              step="0.1"
+                              value="1.5"
+                      />
+                  </div>
               </div>
           </div>
         <!-- Code Viewer Section -->
@@ -166,6 +208,11 @@
       <div class="panel">
         <div class="canvas-wrapper">
           <canvas id="avatar"></canvas>
+          
+          <!-- Switch Avatar Button -->
+          <button id="switch-avatar-btn" class="btn-switch-avatar">
+            Switch to Ready Player Me avatar
+          </button>
           
           <!-- Control Reminder -->
           <div id="control-reminder" class="camera-reminder">
