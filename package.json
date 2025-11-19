@@ -60,7 +60,7 @@
     "@types/node": "^24.10.1",
     "@types/three": "^0.180.0",
     "@vitest/ui": "^4.0.9",
-    "jsdom": "^27.2.0",
+    "happy-dom": "^15.11.7",
     "three": "^0.180.0",
     "typescript": "^5.9.3",
     "vite": "^7.1.12",
