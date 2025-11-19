@@ -70,8 +70,8 @@ const RPM_DEFAULTS = {
   browInnerUp: 1.2,
   browOuterUpLeft: 1.2,
   browOuterUpRight: 1.2,
-  fov: 50,
-  scale: 2.4,
+  fov: 60,
+  scale: 1.8,
   ambientIntensity: 1.2,
   directionalIntensity: 1.5,
   applyTransformToHeadOnly: true,
@@ -355,7 +355,7 @@ async function initAvatar() {
     // Determine model path based on avatar type
     const modelPath = currentAvatarType === 'raccoon' 
       ? './raccoon_head_small.glb'
-      : 'https://models.readyplayer.me/691315d7a577a4cbdaf75330.glb?morphTargets=ARKit&useHands=false'
+      : 'https://models.readyplayer.me/691d84f37b7a88e1f63abd3b.glb?morphTargets=ARKit&useHands=false'
     
     // Build blendshape multipliers based on avatar type
     const defaults = currentAvatarType === 'raccoon' ? RACCOON_DEFAULTS : RPM_DEFAULTS
