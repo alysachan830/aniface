@@ -26,8 +26,6 @@ const modelNameEl = document.getElementById('model-name') as HTMLSpanElement
 // Sliders
 const eyeBlinkSlider = document.getElementById('eyeBlink-slider') as HTMLInputElement
 const jawOpenSlider = document.getElementById('jawOpen-slider') as HTMLInputElement
-const smileSlider = document.getElementById('smile-slider') as HTMLInputElement
-const fovSlider = document.getElementById('fov-slider') as HTMLInputElement
 const scaleSlider = document.getElementById('scale-slider') as HTMLInputElement
 
 // RPM-only sliders
@@ -41,8 +39,6 @@ const enableZoomCheckbox = document.getElementById('enable-zoom-checkbox') as HT
 // Value displays
 const eyeBlinkValue = document.getElementById('eyeBlink-value') as HTMLSpanElement
 const jawOpenValue = document.getElementById('jawOpen-value') as HTMLSpanElement
-const smileValue = document.getElementById('smile-value') as HTMLSpanElement
-const fovValue = document.getElementById('fov-value') as HTMLSpanElement
 const scaleValue = document.getElementById('scale-value') as HTMLSpanElement
 
 // RPM-only value displays
@@ -198,8 +194,6 @@ function showControlReminder(iconHtml: string, text: string) {
 function updateConfigCode() {
   const currentEyeBlink = parseFloat(eyeBlinkSlider.value)
   const currentJawOpen = parseFloat(jawOpenSlider.value)
-  const currentSmile = parseFloat(smileSlider.value)
-  const currentFov = parseInt(fovSlider.value)
   const currentScale = parseFloat(scaleSlider.value)
   const currentEnableControls = enableControlsCheckbox.checked
   const currentEnableZoom = enableZoomCheckbox.checked
@@ -217,7 +211,7 @@ function updateConfigCode() {
   if (currentAvatarType === 'raccoon') {
     // Raccoon config (simplified)
     // Build optional cameraConfig properties
-    let cameraConfigProps = `    fov: ${highlight(currentFov, defaults.fov)}`
+    let cameraConfigProps = `    fov: ${RACCOON_DEFAULTS.fov}`
     if (currentEnableControls) {
       cameraConfigProps += `,\n    enableControls: <span class="code-highlight">true</span>`
     }
@@ -236,8 +230,8 @@ ${cameraConfigProps}
     eyeBlinkLeft: ${highlight(currentEyeBlink, defaults.eyeBlink)},
     eyeBlinkRight: ${highlight(currentEyeBlink, defaults.eyeBlink)},
     jawOpen: ${highlight(currentJawOpen, defaults.jawOpen)},
-    mouthSmileLeft: ${highlight(currentSmile, defaults.smile)},
-    mouthSmileRight: ${highlight(currentSmile, defaults.smile)}
+    mouthSmileLeft: ${RACCOON_DEFAULTS.smile},
+    mouthSmileRight: ${RACCOON_DEFAULTS.smile}
   },
   modelOptions: {
     scale: ${highlight(currentScale, defaults.scale)}
@@ -249,7 +243,7 @@ ${cameraConfigProps}
     const currentDirectionalIntensity = parseFloat(directionalIntensitySlider.value)
 
     // Build optional cameraConfig properties
-    let cameraConfigProps = `    fov: ${highlight(currentFov, RPM_DEFAULTS.fov)}`
+    let cameraConfigProps = `    fov: ${RPM_DEFAULTS.fov}`
     if (currentEnableControls) {
       cameraConfigProps += `,\n    enableControls: <span class="code-highlight">true</span>`
     }
@@ -271,8 +265,8 @@ ${cameraConfigProps}
     browOuterUpLeft: ${RPM_DEFAULTS.browOuterUpLeft},
     browOuterUpRight: ${RPM_DEFAULTS.browOuterUpRight},
     jawOpen: ${highlight(currentJawOpen, RPM_DEFAULTS.jawOpen)},
-    mouthSmileLeft: ${highlight(currentSmile, RPM_DEFAULTS.smile)},
-    mouthSmileRight: ${highlight(currentSmile, RPM_DEFAULTS.smile)}
+    mouthSmileLeft: ${RPM_DEFAULTS.smile},
+    mouthSmileRight: ${RPM_DEFAULTS.smile}
   },
   lightingConfig: {
     ambientIntensity: ${highlight(currentAmbientIntensity, RPM_DEFAULTS.ambientIntensity)},
@@ -361,15 +355,16 @@ async function initAvatar() {
     // Determine model path based on avatar type
     const modelPath = currentAvatarType === 'raccoon' 
       ? './raccoon_head_small.glb'
-      : 'https://models.readyplayer.me/691c8682786317131cabbc31.glb?morphTargets=ARKit&useHands=false'
+      : 'https://models.readyplayer.me/691315d7a577a4cbdaf75330.glb?morphTargets=ARKit&useHands=false'
     
     // Build blendshape multipliers based on avatar type
+    const defaults = currentAvatarType === 'raccoon' ? RACCOON_DEFAULTS : RPM_DEFAULTS
     const blendshapeMultipliers: any = {
       eyeBlinkLeft: parseFloat(eyeBlinkSlider.value),
       eyeBlinkRight: parseFloat(eyeBlinkSlider.value),
       jawOpen: parseFloat(jawOpenSlider.value),
-      mouthSmileLeft: parseFloat(smileSlider.value),
-      mouthSmileRight: parseFloat(smileSlider.value)
+      mouthSmileLeft: defaults.smile,
+      mouthSmileRight: defaults.smile
     }
     
     // Add RPM-specific blendshape multipliers (hardcoded values)
@@ -400,7 +395,7 @@ async function initAvatar() {
       
       // Camera configuration
       cameraConfig: {
-        fov: parseInt(fovSlider.value),
+        fov: defaults.fov,
         enableControls: controlsEnabled,
         enableZoom: zoomEnabled
       },
@@ -530,12 +525,6 @@ function switchAvatar() {
   jawOpenSlider.value = defaults.jawOpen.toString()
   jawOpenValue.textContent = `${defaults.jawOpen.toFixed(1)}x`
   
-  smileSlider.value = defaults.smile.toString()
-  smileValue.textContent = `${defaults.smile.toFixed(1)}x`
-  
-  fovSlider.value = defaults.fov.toString()
-  fovValue.textContent = `${defaults.fov}°`
-  
   scaleSlider.value = defaults.scale.toString()
   scaleValue.textContent = `${defaults.scale.toFixed(1)}x`
   
@@ -579,16 +568,6 @@ eyeBlinkSlider.addEventListener('input', () => {
 
 jawOpenSlider.addEventListener('input', () => {
   jawOpenValue.textContent = `${parseFloat(jawOpenSlider.value).toFixed(1)}x`
-  throttledUpdateAvatar()
-})
-
-smileSlider.addEventListener('input', () => {
-  smileValue.textContent = `${parseFloat(smileSlider.value).toFixed(1)}x`
-  throttledUpdateAvatar()
-})
-
-fovSlider.addEventListener('input', () => {
-  fovValue.textContent = `${parseInt(fovSlider.value)}°`
   throttledUpdateAvatar()
 })
 
