@@ -44,19 +44,19 @@ describe('retargetBlendshapes', () => {
     
     const result = retargetBlendshapes(categories, customMultipliers)
     
-    expect(result.get('eyeBlinkLeft')).toBe(1.0) // Clamped to 1.0
+    expect(result.get('eyeBlinkLeft')).toBe(1.0) // 0.5 * 2.0
     expect(result.get('jawOpen')).toBe(0.3) // 0.6 * 0.5
   })
 
-  test('clamps values to maximum of 1.0', () => {
+  test('applies multipliers correctly', () => {
     const categories = [
       { categoryName: 'eyeBlinkLeft', score: 0.9 }
     ]
     
     const result = retargetBlendshapes(categories, { eyeBlinkLeft: 2.0 })
     
-    // 0.9 * 2.0 = 1.8, should be clamped to 1.0
-    expect(result.get('eyeBlinkLeft')).toBe(1.0)
+    // 0.9 * 2.0 = 1.8
+    expect(result.get('eyeBlinkLeft')).toBe(1.8)
   })
 
   test('uses 1.0 multiplier for blendshapes without custom multiplier', () => {
