@@ -20,7 +20,8 @@ const reminderIcon = controlReminder.querySelector('.reminder-icon') as HTMLDivE
 const reminderText = controlReminder.querySelector('.reminder-text') as HTMLSpanElement
 const codeTitleTry = document.getElementById('code-title-try') as HTMLHeadingElement
 const codeTitleUpdated = document.getElementById('code-title-updated') as HTMLHeadingElement
-const switchAvatarBtn = document.getElementById('switch-avatar-btn') as HTMLButtonElement
+const tabRaccoon = document.getElementById('tab-raccoon') as HTMLButtonElement
+const tabRpm = document.getElementById('tab-rpm') as HTMLButtonElement
 const modelNameEl = document.getElementById('model-name') as HTMLSpanElement
 
 // Sliders
@@ -506,9 +507,21 @@ function toggleTracking() {
 }
 
 // Switch between Raccoon and RPM avatars
-function switchAvatar() {
-  // Toggle avatar type
-  currentAvatarType = currentAvatarType === 'raccoon' ? 'rpm' : 'raccoon'
+function switchAvatar(avatarType: AvatarType) {
+  // Don't switch if already selected
+  if (currentAvatarType === avatarType) return
+  
+  // Update avatar type
+  currentAvatarType = avatarType
+  
+  // Update tab active states
+  if (avatarType === 'raccoon') {
+    tabRaccoon.classList.add('active')
+    tabRpm.classList.remove('active')
+  } else {
+    tabRaccoon.classList.remove('active')
+    tabRpm.classList.add('active')
+  }
   
   // Get the appropriate defaults
   const defaults = currentAvatarType === 'raccoon' ? RACCOON_DEFAULTS : RPM_DEFAULTS
@@ -540,11 +553,6 @@ function switchAvatar() {
     directionalIntensityValue.textContent = `${RPM_DEFAULTS.directionalIntensity.toFixed(1)}x`
   }
   
-  // Update button text
-  switchAvatarBtn.textContent = currentAvatarType === 'raccoon' 
-    ? 'Switch to Ready Player Me avatar' 
-    : 'Switch to Raccoon'
-  
   // Update model name in stats
   modelNameEl.textContent = currentAvatarType === 'raccoon' ? 'Raccoon' : 'Ready Player Me'
   
@@ -558,7 +566,8 @@ canvas.height = 600
 
 // Event listeners
 toggleBtn.addEventListener('click', toggleTracking)
-switchAvatarBtn.addEventListener('click', switchAvatar)
+tabRaccoon.addEventListener('click', () => switchAvatar('raccoon'))
+tabRpm.addEventListener('click', () => switchAvatar('rpm'))
 
 // Slider event listeners - update avatar in real-time with throttling
 eyeBlinkSlider.addEventListener('input', () => {
