@@ -278,19 +278,9 @@ export class AvatarRenderer {
    */
   processLandmarks(results: FaceLandmarkerResult | null): void {
     if (!results) return
+    if (!this.avatar || !this.avatar.loaded) return
     
-    if (!this.avatar || !this.avatar.loaded) {
-      return
-    }
-    
-    this.processLandmarksInternal(results)
-  }
-
-  /**
-   * Internal method to process landmarks
-   */
-  private processLandmarksInternal(results: FaceLandmarkerResult): void {
-    if (!this.avatar) return
+    const avatar = this.avatar
     
     try {
       // Process facial transformation matrix
@@ -301,13 +291,13 @@ export class AvatarRenderer {
           this._tempMatrix4.fromArray(transformMatrix.data)
           
           // Use smaller scale for full-body models to prevent excessive movement
-          const scale = this.avatar.isFullBodyAvatar() ? 1 : 40
-          this.avatar.applyMatrix(this._tempMatrix4, { scale })
+          const scale = avatar.isFullBodyAvatar() ? 1 : 40
+          avatar.applyMatrix(this._tempMatrix4, { scale })
           
           // Optional: offset root bone (only for head-only models)
-          if (!this.avatar.isFullBodyAvatar()) {
+          if (!avatar.isFullBodyAvatar()) {
             this._tempVector3.set(0, 0, 0)
-            this.avatar.offsetRoot(this._tempVector3)
+            avatar.offsetRoot(this._tempVector3)
           }
         }
       }
@@ -317,7 +307,7 @@ export class AvatarRenderer {
         const faceBlendshape = results.faceBlendshapes[0]
         if (faceBlendshape && faceBlendshape.categories) {
           const coefsMap = retargetBlendshapes(faceBlendshape.categories, this.config.blendshapeMultipliers)
-          this.avatar.updateBlendshapes(coefsMap)
+          avatar.updateBlendshapes(coefsMap)
         }
       }
     } catch (error) {
