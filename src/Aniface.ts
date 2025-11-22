@@ -98,7 +98,8 @@ export class Aniface {
         blendshapeMultipliers: this.config.blendshapeMultipliers,
         modelOptions: this.config.modelOptions
       })
-      
+
+      // Sets up Three.js scene and loads avatar
       await this.avatarRenderer.initialize()
       console.log('✅ Avatar renderer initialized')
       
