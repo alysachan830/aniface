@@ -75,7 +75,7 @@ const RPM_DEFAULTS = {
   scale: 1.8,
   ambientIntensity: 1.2,
   directionalIntensity: 1.5,
-  applyTransformToHeadOnly: true,
+  fullBodyAvatar: true,
   enableControls: false,
   enableZoom: false
 }
@@ -279,7 +279,7 @@ ${cameraConfigProps}
     center: true,
     autoRotate: false,
     rotation: 0,
-    applyTransformToHeadOnly: true
+    fullBodyAvatar: true
   }
 })`
   }
@@ -385,7 +385,7 @@ async function initAvatar() {
       modelOptions.center = true
       modelOptions.autoRotate = false
       modelOptions.rotation = 0
-      modelOptions.applyTransformToHeadOnly = RPM_DEFAULTS.applyTransformToHeadOnly
+      modelOptions.fullBodyAvatar = RPM_DEFAULTS.fullBodyAvatar
     }
     
     // Build config object

@@ -244,8 +244,8 @@ export class AvatarRenderer {
     await this.avatar.initialize()
     
     // Adjust camera position based on model type
-    if (this.avatar.isHeadOnlyMode() && this.camera) {
-      // Body models with head-only animation (Ready Player Me, etc.)
+    if (this.avatar.isFullBodyAvatar() && this.camera) {
+      // Full-body models with head tracking (Ready Player Me, etc.)
       // Position camera higher to frame upper body/face area
       this.camera.position.set(0, 0.5, 1.5)
       this.camera.lookAt(0, 0.5, 0)
@@ -300,12 +300,12 @@ export class AvatarRenderer {
           // Reuse temp objects to avoid allocation
           this._tempMatrix4.fromArray(transformMatrix.data)
           
-          // Use smaller scale for head-only mode to prevent excessive movement
-          const scale = this.avatar.isHeadOnlyMode() ? 1 : 40
+          // Use smaller scale for full-body models to prevent excessive movement
+          const scale = this.avatar.isFullBodyAvatar() ? 1 : 40
           this.avatar.applyMatrix(this._tempMatrix4, { scale })
           
-          // Optional: offset root bone (only for full avatar mode)
-          if (!this.avatar.isHeadOnlyMode()) {
+          // Optional: offset root bone (only for head-only models)
+          if (!this.avatar.isFullBodyAvatar()) {
             this._tempVector3.set(0, 0, 0)
             this.avatar.offsetRoot(this._tempVector3)
           }

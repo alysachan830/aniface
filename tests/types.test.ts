@@ -141,7 +141,7 @@ describe('Type Definitions', () => {
       autoRotate: false,
       rotation: 0,
       scale: 1.0,
-      applyTransformToHeadOnly: true
+      fullBodyAvatar: true
     }
     
     expect(options).toBeDefined()

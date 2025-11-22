@@ -25,8 +25,8 @@ export interface LoadModelOptions {
   rotation?: number
   /** Uniform scale factor. Default: 1 */
   scale?: number
-  /** Apply facial transformations to head bone only (for half/full-body avatars). Default: false */
-  applyTransformToHeadOnly?: boolean
+  /** Is this a full-body avatar (vs head-only model)? Set true for full-body avatars like Ready Player Me. Default: false */
+  fullBodyAvatar?: boolean
 }
 
 /**
@@ -75,7 +75,7 @@ export class Avatar {
       autoRotate: true,
       rotation: Math.PI,
       scale: 1,
-      applyTransformToHeadOnly: false,
+      fullBodyAvatar: false,
       ...options
     }
     
@@ -305,14 +305,14 @@ export class Avatar {
     this._tempVector3.set(this.options.scale, this.options.scale, this.options.scale)
     matrix.scale(this._tempVector3)
     
-    // Fix horizontal mirroring by flipping X-axis (only for full avatar mode)
-    if (!this.options.applyTransformToHeadOnly) {
+    // Fix horizontal mirroring by flipping X-axis (only for head-only models)
+    if (!this.options.fullBodyAvatar) {
       this._tempMatrix4.makeScale(-1, 1, 1)
       matrix.premultiply(this._tempMatrix4)
     }
     
     // Apply matrix based on configuration
-    if (this.options.applyTransformToHeadOnly && this.headBone) {
+    if (this.options.fullBodyAvatar && this.headBone) {
       // Apply transformation with cascading rotation for smooth animation
       // This creates natural movement by distributing rotation across multiple bones
       
@@ -386,10 +386,10 @@ export class Avatar {
   }
 
   /**
-   * Check if avatar is configured for head-only transformations
+   * Check if avatar is a full-body model (vs head-only model)
    */
-  isHeadOnlyMode(): boolean {
-    return this.options.applyTransformToHeadOnly
+  isFullBodyAvatar(): boolean {
+    return this.options.fullBodyAvatar
   }
 
   /**
