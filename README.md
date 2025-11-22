@@ -192,9 +192,7 @@ const avatar = new Aniface({
   cameraConfig: {
     fov: 60,                 // Field of view
     enableControls: true,    // Orbit controls
-    enableZoom: false,       // Disable zoom
-    near: 0.1,              // Near clipping plane
-    far: 1000               // Far clipping plane
+    enableZoom: false        // Disable zoom
   },
   
   // Lighting settings

@@ -14,10 +14,6 @@ import { retargetBlendshapes } from '../utils/blendshapeRetargeting'
 export interface CameraConfig {
   /** Camera field of view in degrees (default: 60) */
   fov?: number
-  /** Camera near clipping plane (default: 0.01) */
-  near?: number
-  /** Camera far clipping plane (default: 2000) */
-  far?: number
   /** Enable orbit controls (default: false) */
   enableControls?: boolean
   /** Enable zoom controls (default: true) */
@@ -79,8 +75,8 @@ interface AvatarRendererInternalConfig extends Required<Omit<AvatarRendererConfi
  *   modelPath: '/models/avatar.glb',
  *   // Optional: customize camera
  *   cameraConfig: {
- *     near: 0.01,
- *     far: 1000
+ *     fov: 60,
+ *     enableControls: true
  *   },
  *   // Optional: customize lighting
  *   lightingConfig: {
@@ -115,8 +111,6 @@ export class AvatarRenderer {
       modelPath: config.modelPath,
       cameraConfig: {
         fov: config.cameraConfig?.fov ?? 60,
-        near: config.cameraConfig?.near ?? 0.01,
-        far: config.cameraConfig?.far ?? 2000,
         enableControls: config.cameraConfig?.enableControls ?? false,
         enableZoom: config.cameraConfig?.enableZoom ?? true
       },
@@ -150,8 +144,8 @@ export class AvatarRenderer {
     this.camera = new THREE.PerspectiveCamera(
       this.config.cameraConfig.fov,
       aspect,
-      this.config.cameraConfig.near,
-      this.config.cameraConfig.far
+      0.01,  // near clipping plane
+      100    // far clipping plane
     )
 
     // Set up WebGL renderer
