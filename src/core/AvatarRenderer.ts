@@ -144,8 +144,6 @@ export class AvatarRenderer {
     this.camera = new THREE.PerspectiveCamera(
       this.config.cameraConfig.fov,
       aspect,
-      0.01,  // near clipping plane
-      100    // far clipping plane
     )
 
     // Set up WebGL renderer
