@@ -356,7 +356,7 @@ async function initAvatar() {
     // Determine model path based on avatar type
     const modelPath = currentAvatarType === 'raccoon' 
       ? './raccoon_head_small.glb'
-      : 'https://models.readyplayer.me/691d84f37b7a88e1f63abd3b.glb?morphTargets=ARKit&useHands=false'
+      : 'https://models.readyplayer.me/691c8682786317131cabbc31.glb?morphTargets=ARKit&useHands=false'
     
     // Build blendshape multipliers based on avatar type
     const defaults = currentAvatarType === 'raccoon' ? RACCOON_DEFAULTS : RPM_DEFAULTS
