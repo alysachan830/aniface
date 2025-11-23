@@ -1,6 +1,5 @@
 # Source files
 src/
-examples/
 node_modules/
 
 # Build config
@@ -14,8 +13,8 @@ vite.config.ts
 .vscode/
 .idea/
 
-# HTML examples
-index.html
+# Demo
+demo/
 
 # Git
 .git/
@@ -25,4 +24,3 @@ index.html
 .DS_Store
 *.log
 .plan.md
-

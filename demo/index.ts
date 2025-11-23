@@ -1,4 +1,4 @@
-import { Aniface } from './src'
+import { Aniface } from 'aniface'
 
 let avatar: Aniface | null = null
 let webcamStream: MediaStream | null = null
