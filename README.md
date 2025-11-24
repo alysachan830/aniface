@@ -265,64 +265,6 @@ avatar.running: boolean
 avatar.ready: boolean
 ```
 
-#### Advanced Access
-
-```typescript
-// Get the renderer (for advanced customization)
-const renderer = avatar.getRenderer()
-
-// Get the landmark manager
-const landmarkManager = avatar.getLandmarkManager()
-
-// Get video/canvas elements
-const video = avatar.getVideoElement()
-const canvas = avatar.getCanvasElement()
-```
-
-### Using Individual Components
-
-For more control, use the low-level components:
-
-```javascript
-import { 
-  FacialLandmarkManager,
-  AvatarRenderer,
-  Avatar,
-  retargetBlendshapes
-} from 'aniface'
-
-// Create facial landmark manager
-const landmarkManager = new FacialLandmarkManager({
-  videoElement,
-  onResults: (result) => {
-    if (result.faceBlendshapes?.[0]) {
-      const blendshapes = retargetBlendshapes(
-        result.faceBlendshapes[0].categories
-      )
-      // Apply to your avatar...
-    }
-  }
-})
-
-await landmarkManager.initialize()
-landmarkManager.start()
-
-// Create renderer
-const renderer = new AvatarRenderer({
-  canvas: canvasElement,
-  modelPath: '/path/to/model.glb'
-})
-
-await renderer.initialize()
-
-// Animation loop
-function animate() {
-  renderer.render()
-  requestAnimationFrame(animate)
-}
-animate()
-```
-
 ## License
 
 MIT - see [LICENSE](LICENSE) file for details
