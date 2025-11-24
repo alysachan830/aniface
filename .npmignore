@@ -1,0 +1,27 @@
+# Source files
+src/
+node_modules/
+
+# Build config
+tsconfig.json
+tsconfig.build.json
+vite.config.ts
+
+# Development files
+*.test.ts
+*.spec.ts
+.vscode/
+.idea/
+
+# Demo
+demo/
+dist-demo/
+
+# Git
+.git/
+.gitignore
+
+# Misc
+.DS_Store
+*.log
+.plan.md

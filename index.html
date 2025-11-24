@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aniface - Basic Example</title>
+  <script type="module" crossorigin src="/aniface/assets/index-z_rM8suo.js"></script>
+  <link rel="stylesheet" crossorigin href="/aniface/assets/index-CM-l9j44.css">
+</head>
+<body>
+  <!-- Webcam Overlay (Top-Right Corner) -->
+  <div class="webcam-overlay">
+    <video id="webcam" autoplay playsinline></video>
+  </div>
+
+  <div class="container">
+
+    <!-- Main Layout Grid -->
+    <div class="demo-grid">
+      <!-- Left Column: Controls -->
+      <div class="panel">
+          <h2>Configuration example</h2>
+          <div class="sliders">
+              <div>
+                  <h3>blendshapeMultipliers</h3>
+
+                  <!-- Eye Blink Slider -->
+                  <div class="slider-group">
+                      <label>
+                          <span>eyeBlinkLeft, eyeBlinkRight</span>
+                          <span id="eyeBlink-value">1.2x</span>
+                      </label>
+                      <input
+                              type="range"
+                              id="eyeBlink-slider"
+                              min="0.5"
+                              max="2.0"
+                              step="0.1"
+                              value="1.2"
+                      />
+                  </div>
+
+                  <!-- Jaw Open Slider -->
+                  <div class="slider-group">
+                      <label>
+                          <span>Jaw Open</span>
+                          <span id="jawOpen-value">1.0x</span>
+                      </label>
+                      <input
+                              type="range"
+                              id="jawOpen-slider"
+                              min="0.5"
+                              max="2.0"
+                              step="0.1"
+                              value="1.0"
+                      />
+                  </div>
+
+                  <!-- Smile slider removed - mouthSmile blendshapes are hardcoded -->
+              </div>
+              <div>
+                  <h3>cameraConfig</h3>
+                  <!-- FOV slider removed - fov is hardcoded -->
+                  <!-- Checkboxes -->
+                  <div class="checkbox-group">
+                      <label>
+                          <input type="checkbox" id="enable-controls-checkbox" />
+                          <span>Enable Camera Controls</span>
+                      </label>
+                  </div>
+
+                  <div class="checkbox-group">
+                      <label>
+                          <input type="checkbox" id="enable-zoom-checkbox" />
+                          <span>Enable Zoom</span>
+                      </label>
+                  </div>
+              </div>
+              <div>
+                  <h3>modelOptions</h3>
+                  <!-- Scale Slider -->
+                  <div class="slider-group">
+                      <label>
+                          <span>Scale</span>
+                          <span id="scale-value">1.0x</span>
+                      </label>
+                      <input
+                              type="range"
+                              id="scale-slider"
+                              min="0.5"
+                              max="3.0"
+                              step="0.1"
+                              value="1.0"
+                      />
+                  </div>
+
+                  <!-- RPM-only controls (hidden - fullBodyAvatar is hardcoded) -->
+                  <div class="rpm-only" style="display: none;">
+                  </div>
+              </div>
+              
+              <!-- RPM-only lighting config (hidden by default) -->
+              <div class="rpm-only" style="display: none;">
+                  <h3>lightingConfig</h3>
+                  <!-- Ambient Intensity Slider -->
+                  <div class="slider-group">
+                      <label>
+                          <span>ambientIntensity</span>
+                          <span id="ambientIntensity-value">1.2x</span>
+                      </label>
+                      <input
+                              type="range"
+                              id="ambientIntensity-slider"
+                              min="0.5"
+                              max="3.0"
+                              step="0.1"
+                              value="1.2"
+                      />
+                  </div>
+
+                  <!-- Directional Intensity Slider -->
+                  <div class="slider-group">
+                      <label>
+                          <span>directionalIntensity</span>
+                          <span id="directionalIntensity-value">1.5x</span>
+                      </label>
+                      <input
+                              type="range"
+                              id="directionalIntensity-slider"
+                              min="0.5"
+                              max="3.0"
+                              step="0.1"
+                              value="1.5"
+                      />
+                  </div>
+              </div>
+          </div>
+        <!-- Code Viewer Section -->
+        <div class="code-section">
+          <div class="code-header">
+            <h3 id="code-title-try" class="code-title-visible">Try now</h3>
+            <h3 id="code-title-updated" class="code-title-hidden">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              Updated
+            </h3>
+            <button id="copyBtn" class="btn-copy">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              Copy Code
+            </button>
+          </div>
+          <div class="code-block">
+            <code id="config-code">const avatar = new Aniface({
+  // videoElement: Your HTML video element,
+  // canvasElement: Your canvas HTML canvas element,
+  // modelPath: Your 3D model GLTF file path,
+  cameraConfig: {
+    fov: 60
+  },
+  blendshapeMultipliers: {
+    eyeBlinkLeft: 1.2,
+    eyeBlinkRight: 1.2,
+    jawOpen: 1.0,
+    mouthSmile: 1.1
+  },
+  modelOptions: {
+    scale: 1.0
+  }
+})</code>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Avatar -->
+      <div class="panel">
+        <div class="canvas-wrapper">
+          <canvas id="avatar"></canvas>
+          
+          <!-- Avatar Tabs -->
+          <div class="avatar-tabs">
+            <button id="tab-raccoon" class="avatar-tab active">
+              Raccoon
+            </button>
+            <button id="tab-rpm" class="avatar-tab">
+              Ready Player Me
+            </button>
+          </div>
+          
+          <!-- Control Reminder -->
+          <div id="control-reminder" class="camera-reminder">
+            <div class="reminder-icon"></div>
+            <span class="reminder-text"></span>
+          </div>
+        </div>
+        
+        <!-- Stats Bar -->
+        <div class="stats-bar">
+          <div class="stats-info">
+            <span>FPS: <span id="fps-value">--</span></span>
+            <span>Model: <span id="model-name">Raccoon</span></span>
+          </div>
+          <button id="toggleBtn" class="btn-secondary" disabled>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="6" y="6" width="12" height="12"></rect>
+            </svg>
+            Stop tracking
+          </button>
+        </div>
+
+        <!-- Status Display -->
+        <div id="status" class="status status-loading">
+          <div class="spinner"></div>
+          <span>Initializing...</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      Built with <a href="https://github.com/google/mediapipe">MediaPipe</a> and 
+      <a href="https://threejs.org/">Three.js</a>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast">Code copied!</div>
+
+</body>
+</html>
+
