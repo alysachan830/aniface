@@ -15,25 +15,8 @@ A powerful, easy-to-use library that brings your 3D avatar models to life with r
 
 ## Installation
 
-### For Local Development
-
-If you're developing this library locally and want to use it in another project:
-
 ```bash
-cd /path/to/aniface
-npm install
-
-# In your other project:
-cd /path/to/your-project
-npm install /path/to/aniface
-```
-
-### Prerequisites
-
-Make sure your project has these peer dependencies:
-
-```bash
-npm install three @mediapipe/tasks-vision
+npm install aniface three @mediapipe/tasks-vision
 ```
 
 ## Quick Start
@@ -82,82 +65,91 @@ new Aniface({
 })
 ```
 
-### Common Scenarios
+### Examples
 
-#### 1. Video Call Avatar (Close-up Face)
+#### Head-only Avatar (Raccoon avatar)
 
 ```javascript
 const avatar = new Aniface({
   videoElement,
   canvasElement,
-  modelPath: '/models/avatar.glb',
+  modelPath: './raccoon_head_small.glb',
   
-  // Zoom in for close-up
-  modelOptions: { 
-    scale: 0.6,      // Smaller scale = larger appearance
-    center: true,
-    autoRotate: true
-  },
-  
-  // Camera settings
   cameraConfig: {
-    fov: 70,           // Wider FOV = closer view
-    enableControls: false,  // Disable user camera controls
+    fov: 60,
+    enableControls: false,
     enableZoom: false
-  }
+  },
+  
+  blendshapeMultipliers: {
+    eyeBlinkLeft: 1.2,
+    eyeBlinkRight: 1.2,
+    jawOpen: 1.0,
+    mouthSmileLeft: 1.1,
+    mouthSmileRight: 1.1
+  },
+  
+  modelOptions: {
+    scale: 1.0
+  },
+  
+  onReady: () => console.log('Avatar ready!'),
+  onError: (error) => console.error('Error:', error)
 })
+
+await avatar.initialize()
+avatar.start()
 ```
 
-#### 2. Full Avatar Display
+#### Half-body Avatar (Ready Player Me avatar)
 
 ```javascript
 const avatar = new Aniface({
   videoElement,
   canvasElement,
-  modelPath: '/models/full-body.glb',
+  modelPath: 'https://models.readyplayer.me/[YOUR_ID].glb?morphTargets=ARKit&useHands=false',
   
-  // Show full model
-  modelOptions: { 
-    scale: 1.0       // Default scale
+  cameraConfig: {
+    fov: 60,
+    enableControls: false,
+    enableZoom: false
   },
   
-  // Camera settings
-  cameraConfig: {
-    fov: 60,           // Standard FOV
-    enableControls: true,  // Let users rotate
-    enableZoom: true       // Let users zoom
-  }
-})
-```
-
-#### 3. Custom Canvas Size
-
-```javascript
-const avatar = new Aniface({
-  videoElement,
-  canvasElement,
-  modelPath: '/models/avatar.glb',
-  
-  // Adjust for your canvas aspect ratio
-  modelOptions: { scale: 0.5 },
-  
-  // Camera settings
-  cameraConfig: {
-    fov: 75
+  blendshapeMultipliers: {
+    eyeBlinkLeft: 1.3,
+    eyeBlinkRight: 1.3,
+    browInnerUp: 1.2,
+    browOuterUpLeft: 1.2,
+    browOuterUpRight: 1.2,
+    jawOpen: 1.0,
+    mouthSmileLeft: 1.0,
+    mouthSmileRight: 1.0
   },
   
-  // Handle window resize
-  onReady: () => {
-    window.addEventListener('resize', () => {
-      const width = canvasElement.clientWidth
-      const height = canvasElement.clientHeight
-      avatar.updateSize(width, height)
-    })
-  }
+  lightingConfig: {
+    ambientIntensity: 1.2,
+    directionalIntensity: 1.5,
+    directionalPosition: [2, 3, 3]
+  },
+  
+  modelOptions: {
+    scale: 1.8,
+    center: true,
+    autoRotate: false,
+    rotation: 0,
+    fullBodyAvatar: true
+  },
+  
+  onReady: () => console.log('Avatar ready!'),
+  onError: (error) => console.error('Error:', error)
 })
+
+await avatar.initialize()
+avatar.start()
 ```
 
-## Advanced Configuration
+
+## Advanced Configuration Examples
 
 ### Blendshape Customization
 
@@ -206,20 +198,26 @@ const avatar = new Aniface({
 
 ### MediaPipe Configuration
 
+Fine-tune facial detection and tracking:
+
 ```javascript
 const avatar = new Aniface({
   videoElement,
   canvasElement,
   modelPath: '/models/avatar.glb',
   
-  // Facial tracking settings
+  // Optional: Adjust facial tracking sensitivity
   landmarkConfig: {
-    wasmPath: '/mediapipe/wasm',     // Path to MediaPipe WASM files
-    minDetectionConfidence: 0.5,      // Lower = more detections
-    minTrackingConfidence: 0.5        // Lower = smoother tracking
+    minDetectionConfidence: 0.5,      // 0-1: Lower = more detections (default: 0.5)
+    minTrackingConfidence: 0.5        // 0-1: Lower = smoother tracking (default: 0.5)
   }
 })
 ```
+
+**Configuration tips:**
+- Lower confidence values = more sensitive detection but may be less stable
+- Higher confidence values = more stable but may miss subtle movements
+- WASM files load from CDN automatically - no `wasmPath` needed unless self-hosting
 
 ## Model Requirements
 
