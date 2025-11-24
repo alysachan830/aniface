@@ -12,8 +12,9 @@
     "declarationMap": true,
     "sourceMap": true,
     
-    // Better compatibility for npm packages
-    "moduleResolution": "node"
+    // Proper ESM support for Node.js
+    "module": "ESNext",
+    "moduleResolution": "bundler"
   },
   "include": [
     "src/**/*"

@@ -3,10 +3,10 @@
  */
 
 import type { FaceLandmarkerResult } from '@mediapipe/tasks-vision'
-import type { MediaPipeBlendshapeName } from './utils/blendshapeRetargeting'
-import type { LoadModelOptions } from './core/Avatar'
-import type { FacialLandmarkManagerConfig } from './core/FacialLandmarkManager'
-import type { CameraConfig, LightingConfig } from './core/AvatarRenderer'
+import type { MediaPipeBlendshapeName } from './utils/blendshapeRetargeting.js'
+import type { LoadModelOptions } from './core/Avatar.js'
+import type { FacialLandmarkManagerConfig } from './core/FacialLandmarkManager.js'
+import type { CameraConfig, LightingConfig } from './core/AvatarRenderer.js'
 
 /**
  * Configuration options for Aniface

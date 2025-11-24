@@ -5,8 +5,8 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import type { FaceLandmarkerResult } from '@mediapipe/tasks-vision'
-import { Avatar, type LoadModelOptions } from './Avatar'
-import { retargetBlendshapes } from '../utils/blendshapeRetargeting'
+import { Avatar, type LoadModelOptions } from './Avatar.js'
+import { retargetBlendshapes } from '../utils/blendshapeRetargeting.js'
 
 /**
  * Camera configuration

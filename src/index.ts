@@ -4,12 +4,12 @@
  */
 
 // Main exports
-export { Aniface } from './Aniface'
+export { Aniface } from './Aniface.js'
 
 // Core exports (for advanced usage)
-export { FacialLandmarkManager } from './core/FacialLandmarkManager'
-export { AvatarRenderer } from './core/AvatarRenderer'
-export { Avatar } from './core/Avatar'
+export { FacialLandmarkManager } from './core/FacialLandmarkManager.js'
+export { AvatarRenderer } from './core/AvatarRenderer.js'
+export { Avatar } from './core/Avatar.js'
 
 // Utility exports
 export {
@@ -20,7 +20,7 @@ export {
   combineBlendshapes,
   DEFAULT_BLENDSHAPE_MULTIPLIERS,
   MEDIAPIPE_BLENDSHAPE_NAMES
-} from './utils/blendshapeRetargeting'
+} from './utils/blendshapeRetargeting.js'
 
 // Type exports
 export type {
@@ -28,26 +28,26 @@ export type {
   AnifaceEvents,
   BlendshapeMultipliers,
   BlendshapeCategory
-} from './types'
+} from './types.js'
 
 export type {
   FacialLandmarkManagerConfig
-} from './core/FacialLandmarkManager'
+} from './core/FacialLandmarkManager.js'
 
 export type {
   AvatarRendererConfig,
   CameraConfig,
   LightingConfig
-} from './core/AvatarRenderer'
+} from './core/AvatarRenderer.js'
 
 export type {
   ApplyMatrixOptions,
   LoadModelOptions
-} from './core/Avatar'
+} from './core/Avatar.js'
 
 export type {
   MediaPipeBlendshapeName
-} from './utils/blendshapeRetargeting'
+} from './utils/blendshapeRetargeting.js'
 
 // Version
 export const VERSION = '0.1.0'

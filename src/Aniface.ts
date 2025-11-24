@@ -2,9 +2,9 @@
  * Main Aniface class - Entry point for the library
  */
 
-import type { AnifaceConfig } from './types'
-import { FacialLandmarkManager } from './core/FacialLandmarkManager'
-import { AvatarRenderer } from './core/AvatarRenderer'
+import type { AnifaceConfig } from './types.js'
+import { FacialLandmarkManager } from './core/FacialLandmarkManager.js'
+import { AvatarRenderer } from './core/AvatarRenderer.js'
 
 /**
  * Aniface - Animate 3D avatars with real-time facial tracking
