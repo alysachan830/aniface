@@ -285,6 +285,7 @@ h1 {
   display: block;
   border-radius: 8px;
   background: #000;
+  transform: scaleX(-1);
 }
 
 .controls {

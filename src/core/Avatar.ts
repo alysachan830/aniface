@@ -305,12 +305,6 @@ export class Avatar {
     this._tempVector3.set(this.options.scale, this.options.scale, this.options.scale)
     matrix.scale(this._tempVector3)
     
-    // Fix horizontal mirroring by flipping X-axis (only for head-only models)
-    if (!this.options.fullBodyAvatar) {
-      this._tempMatrix4.makeScale(-1, 1, 1)
-      matrix.premultiply(this._tempMatrix4)
-    }
-    
     // Apply matrix based on configuration
     if (this.options.fullBodyAvatar && this.headBone) {
       // Apply transformation with cascading rotation for smooth animation
