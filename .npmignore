@@ -15,6 +15,8 @@ vite.config.ts
 
 # Demo
 demo/
+readme-demo-video/
+dist-demo/
 
 # Git
 .git/

@@ -4,6 +4,16 @@
 
 A powerful, easy-to-use library that brings your 3D avatar models to life with real-time facial expressions captured from a webcam.
 
+### Demo Videos
+
+#### Raccoon Avatar Demo
+
+<!-- Drag and drop readme-demo-video/raccoon-demo.mp4 here when editing on GitHub -->
+
+#### Ready Player Me Avatar Demo
+
+<!-- Drag and drop readme-demo-video/rpm-demo.mp4 here when editing on GitHub -->
+
 ## Features
 
 - 🎭 **Real-time facial tracking** - Powered by MediaPipe Face Landmarker
