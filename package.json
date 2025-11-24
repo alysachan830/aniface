@@ -28,7 +28,8 @@
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
     "clean": "rm -rf dist",
-    "prepublishOnly": "npm run clean && npm run build:lib"
+    "prepublishOnly": "npm run clean && npm run build:lib",
+    "deploy:demo": "npm run build && gh-pages -d dist-demo"
   },
   "keywords": [
     "3d",
@@ -61,6 +62,7 @@
     "@types/node": "^24.10.1",
     "@types/three": "^0.180.0",
     "@vitest/ui": "^4.0.9",
+    "gh-pages": "^6.3.0",
     "happy-dom": "^15.11.7",
     "three": "^0.180.0",
     "typescript": "^5.9.3",
