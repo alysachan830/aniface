@@ -4,10 +4,6 @@
 
 A powerful, easy-to-use library that brings your 3D avatar models to life with real-time facial expressions captured from a webcam.
 
-![raccoon-demo](https://github.com/user-attachments/assets/285cfeae-8fe8-45ca-afc4-dbafe6fa1cf7)
-
-![rpm-demo](https://github.com/user-attachments/assets/ce9e72a0-ef45-487d-aca2-fccd319456b2)
-
 ## Features
 
 - 🎭 **Real-time facial tracking** - Powered by MediaPipe Face Landmarker
@@ -16,6 +12,13 @@ A powerful, easy-to-use library that brings your 3D avatar models to life with r
 - 🔧 **Highly customizable** - Fine-tune every aspect of rendering and tracking
 - 📦 **TypeScript support** - Full type definitions included
 - ⚡ **Performance optimized** - Efficient rendering and blendshape updates
+
+
+<div>
+  <img src="https://github.com/user-attachments/assets/285cfeae-8fe8-45ca-afc4-dbafe6fa1cf7" alt="Raccoon Demo" width="45%" />
+  <img src="https://github.com/user-attachments/assets/ce9e72a0-ef45-487d-aca2-fccd319456b2" alt="RPM Demo" width="45%" />
+</div>
+
 
 ## Installation
 
