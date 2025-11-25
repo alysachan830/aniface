@@ -1,6 +1,6 @@
 {
   "name": "aniface",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Animate 3D avatars with real-time facial tracking using MediaPipe and Three.js",
   "type": "module",
   "main": "./dist/index.js",
