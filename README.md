@@ -1,5 +1,13 @@
 # Aniface
 
+[![npm version](https://img.shields.io/npm/v/aniface.svg)](https://www.npmjs.com/package/aniface)
+[![npm downloads](https://img.shields.io/npm/dm/aniface.svg)](https://www.npmjs.com/package/aniface)
+[![license](https://img.shields.io/npm/l/aniface.svg)](https://github.com/alysachan830/aniface/blob/main/LICENSE)
+[![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.npmjs.com/package/aniface)
+[![Live Demo](https://img.shields.io/badge/demo-live-success.svg)](https://alysachan830.github.io/aniface/)
+
+[🎭 **Try Live Demo**](https://alysachan830.github.io/aniface/) | [📦 **npm Package**](https://www.npmjs.com/package/aniface)
+
 **Animate 3D avatars with real-time facial tracking using MediaPipe and Three.js**
 
 A powerful, easy-to-use library that brings your 3D avatar models to life with real-time facial expressions captured from a webcam.
