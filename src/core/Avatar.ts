@@ -343,6 +343,22 @@ export class Avatar {
     } else {
       // Apply transformation to entire avatar scene (for head-only models)
       this.gltf.scene.matrixAutoUpdate = false
+      
+      // Decompose the matrix to extract position, rotation, and scale
+      const position = this._tempVector3
+      const scale = new THREE.Vector3()
+      matrix.decompose(position, this._tempQuaternion, scale)
+      
+      // Extract rotation as Euler angles and mirror Y and Z axes to match user's movements
+      this._tempEuler.setFromQuaternion(this._tempQuaternion)
+      const x = this._tempEuler.x
+      const y = -this._tempEuler.y  // Mirror Y axis
+      const z = -this._tempEuler.z  // Mirror Z axis
+      
+      // Recompose the matrix with mirrored rotation but preserve position and scale
+      this._tempQuaternion.setFromEuler(this._tempEuler.set(x, y, z))
+      matrix.compose(position, this._tempQuaternion, scale)
+      
       this.gltf.scene.matrix.copy(matrix)
     }
   }
